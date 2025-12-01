@@ -62,12 +62,40 @@
     slider.value = String(value);
     applyStrength(value / 100);
 
+    // Easter egg: bang slider to the right 5 times to open site
+    const maxVal = Number(slider.max) || 100;
+    let prevVal = value;
+    let bangCount = 0;
+    let lastBangTs = 0;
+    const BANG_WINDOW_MS = 5000; // reset window
+
     slider.addEventListener("input", () => {
-      const v = Math.max(0, Math.min(100, Number(slider.value) || 0));
-      applyStrength(v / 100);
+      const raw = Number(slider.value);
+      const v = Math.max(0, Math.min(maxVal, Number.isFinite(raw) ? raw : 0));
+
+      // Theme strength update
+      applyStrength(v / maxVal);
       try {
         localStorage.setItem("modeStrength", String(v));
       } catch (_) {}
+
+      // Detect discrete transition to max from below (a "bang")
+      const now = Date.now();
+      if (prevVal < maxVal && v >= maxVal) {
+        if (now - lastBangTs > BANG_WINDOW_MS) {
+          bangCount = 0; // window expired -> start fresh
+        }
+        bangCount += 1;
+        lastBangTs = now;
+        if (bangCount >= 5) {
+          bangCount = 0;
+          try {
+            window.location.href = "https://csabi.zip";
+          } catch (_) {}
+        }
+      }
+
+      prevVal = v;
     });
   }
 
