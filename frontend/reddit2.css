@@ -16,6 +16,37 @@ body {
   color: var(--fg);
 }
 
+/* App theming for Bootstrap components */
+.navbar {
+  background: var(--card) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--fg);
+}
+.navbar .form-control {
+  background: var(--bg);
+  color: var(--fg);
+  border-color: var(--border);
+}
+.navbar .form-control::placeholder { color: var(--muted); }
+.navbar .input-group-text {
+  background: var(--card);
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+.card {
+  background: var(--card);
+  color: var(--fg);
+  border-color: var(--border);
+}
+.card .card-title { color: var(--fg); }
+
+.list-group-item {
+  background: var(--card);
+  color: var(--fg);
+  border-color: var(--border);
+}
+
 /* Top bar: now handled by Bootstrap navbar */
 /* The search input uses Bootstrap's input-group. */
 .icon { margin-right: 6px; }
