@@ -42,14 +42,7 @@ namespace vizsgaController.Model
             return Convert.ToBase64String(hash);
 
         }
-        public DTO.UserDto ShowUsers(int id)
-        {
-            return _context.users.Where(x => x.userID == id).Select(x => new UserDto
-            {
-                Name = x.username,
-                Password = x.userpassword
-            }).First();
-        }
+        
 
     }
 }

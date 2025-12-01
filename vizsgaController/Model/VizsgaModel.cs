@@ -1,4 +1,5 @@
-﻿using vizsgaController.Persistence;
+﻿using vizsgaController.Dtos;
+using vizsgaController.Persistence;
 
 namespace vizsgaController.Model
 {
@@ -9,5 +10,7 @@ namespace vizsgaController.Model
         {
             _context = context;
         }
+
+        
     }
 }

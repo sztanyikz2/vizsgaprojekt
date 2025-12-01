@@ -68,18 +68,6 @@ namespace vizsgaController.Controllers
             return Ok();
         }
 
-        [HttpGet("/users")]
-        public ActionResult<IEnumerable<DTO.UserDto>> Getusers(int id)
-        {
-            try
-            {
-                return Ok(_model.ShowUsers(id));
-            }
-            catch (Exception e)
-            {
-                return BadRequest();
-            }
-
-        }
+       
     }
 }
