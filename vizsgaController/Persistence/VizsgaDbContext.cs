@@ -8,9 +8,6 @@ namespace vizsgaController.Persistence
     {
         public DbSet<User> users { get; set; }
         public DbSet<Admin> admin { get; set; }
-        public DbSet<Post> posts { get; set; }
-        public DbSet<Category> categories { get; set; }
-        public DbSet<Report> report { get; set; }
         public VizsgaDbContext(DbContextOptions<VizsgaDbContext> options) : base(options) { }
     }
 
