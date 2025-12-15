@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using vizsgaController.Dtos;
@@ -17,12 +18,11 @@ namespace vizsgaController.Controllers
             _model = model;
         }
         [HttpPost("/registration")]
-        public ActionResult Registration(string username, string password, bool IsAdmin)
+        public ActionResult Registration(string username, string password)
         {
             try
             {
-                string role = IsAdmin ? "Admin" : "User";
-                _model.Registration(username, password, role);
+                _model.Registration(username, password);
                 return Ok();
             }
             catch (InvalidOperationException ex)

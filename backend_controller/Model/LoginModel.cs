@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 using System.Text;
 using vizsgaController.Dtos;
 using vizsgaController.Persistence;
-using static vizsgaController.Dtos.DTOs;
 
 namespace vizsgaController.Model
 {
@@ -15,7 +14,7 @@ namespace vizsgaController.Model
             _context = context;
         }
 
-        public void Registration(string name, string password, string role = "User")
+        public void Registration(string name, string password)
         {
             if (_context.users.Any(u => u.username == name))
             {
@@ -23,21 +22,21 @@ namespace vizsgaController.Model
             }
             using var trx = _context.Database.BeginTransaction();
             {
-                _context.users.Add(new User { username = name, userpassword = HashPassword(password), Role = role });
+                _context.users.Add(new User { username = name, userpassword = HashPassword(password, "reddit2")});
                 _context.SaveChanges();
                 trx.Commit();
             }
         }
         public User ValidateUser(string username, string password)
         {
-            var hash = HashPassword(password);
+            var hash = HashPassword(password, "reddit2");
             var user = _context.users.Where(x => x.username == username);
             return user.Where(x => x.userpassword == hash).FirstOrDefault();
         }
-        private string HashPassword(string password)
+        private string HashPassword(string password, string salt)
         {
             using var sha = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
+            var bytes = Encoding.UTF8.GetBytes(password + salt);
             var hash = sha.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
 
