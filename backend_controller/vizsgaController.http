@@ -1,0 +1,6 @@
+@vizsgaController_HostAddress = http://localhost:5165
+
+GET {{vizsgaController_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
