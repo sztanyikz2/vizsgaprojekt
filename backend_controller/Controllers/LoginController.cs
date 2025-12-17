@@ -47,8 +47,8 @@ namespace vizsgaController.Controllers
                 }
                 List<Claim> claims = new()
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.userID.ToString()),
-                    new Claim(ClaimTypes.Name, user.username),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                    new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Role, user.Role )
                 };
                 var id = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
