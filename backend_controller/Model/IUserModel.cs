@@ -2,7 +2,7 @@
 
 namespace vizsgaController.Model
 {
-    public interface ILoginModel
+    public interface IUserModel
     {
         public void Registration(string name, string password);
         public User ValidateUser(string username, string password);

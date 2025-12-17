@@ -11,10 +11,10 @@ namespace vizsgaController
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddDbContextPool<VizsgaDbContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("ForumDb")); });
+            builder.Services.AddDbContextPool<NewsDbContext>(options => { options.UseNpgsql(builder.Configuration.GetConnectionString("ForumDb")); });
             // Add services to the container.
-            builder.Services.AddTransient<ILoginModel,LoginModel>();
-            builder.Services.AddTransient<IVizsgaModel,VizsgaModel>();
+            builder.Services.AddTransient<IUserModel,UserModel>();
+            builder.Services.AddTransient<INewsModel,NewsModel>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

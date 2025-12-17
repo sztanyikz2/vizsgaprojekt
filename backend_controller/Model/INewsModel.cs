@@ -2,7 +2,7 @@
 
 namespace vizsgaController.Model
 {
-    public interface IVizsgaModel
+    public interface INewsModel
     {
         public IEnumerable<UserDTO> GetUserNamesBySearch(string name);
         public IEnumerable<PostDTO> GetPostsBySearch(string title);

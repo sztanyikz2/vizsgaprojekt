@@ -10,10 +10,10 @@ namespace vizsgaController.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly LoginModel _model;
-        public LoginController(LoginModel model)
+        private readonly UserModel _model;
+        public UserController(UserModel model)
         {
             _model = model;
         }

@@ -4,10 +4,10 @@ using vizsgaController.Persistence;
 
 namespace vizsgaController.Model
 {
-    public class VizsgaModel : IVizsgaModel
+    public class NewsModel : INewsModel
     {
-        private readonly VizsgaDbContext _context;
-        public VizsgaModel(VizsgaDbContext context)
+        private readonly NewsDbContext _context;
+        public NewsModel(NewsDbContext context)
         {
             _context = context;
         }

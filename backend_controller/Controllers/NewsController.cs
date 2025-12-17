@@ -7,11 +7,11 @@ namespace vizsgaController.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VizsgaController : ControllerBase
+    public class NewsController : ControllerBase
     {
 
-        private readonly IVizsgaModel _model;
-        public VizsgaController(IVizsgaModel model)
+        private readonly INewsModel _model;
+        public NewsController(INewsModel model)
         {
             _model = model;
         }
