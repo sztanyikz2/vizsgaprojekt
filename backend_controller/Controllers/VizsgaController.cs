@@ -49,7 +49,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("deletepost")]
         public IActionResult DeletePost([FromQuery] int id)
         {
@@ -67,7 +67,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("moderatecomments")]
         public IActionResult ModerateComments([FromQuery] int id)
         {
@@ -85,13 +85,13 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [Authorize(Roles ="User")]
+        [Authorize(Roles = "User")]
         [HttpDelete("deleteownpost")]
-        public IActionResult DeleteOwnPost([FromQuery] int postid, int userid)
+        public IActionResult DeleteOwnPost([FromQuery] int postid, [FromQuery] int userid)
         {
             try
             {
-                _model.DeleteOwnPost(postid,userid);
+                _model.DeleteOwnPost(postid, userid);
                 return Ok("Saját poszt sikeresen törölve");
             }
             catch (InvalidDataException ex)
@@ -104,7 +104,7 @@ namespace vizsgaController.Controllers
             }
         }
         [HttpPost("favouriteposts")]
-        public IActionResult FavouritePosts([FromQuery] int postID, int userID)
+        public IActionResult FavouritePosts([FromQuery] int postID, [FromQuery] int userID)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("manageusers")]
         public IActionResult ManageUsers([FromQuery] int id)
         {
@@ -139,7 +139,25 @@ namespace vizsgaController.Controllers
             }
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
+        [HttpPut("modifyusers")]
+        public IActionResult ModifyUsers([FromQuery] int id, [FromQuery] string name)
+        {
+            try
+            {
+                _model.ModifyUsers(id, name);
+                return Ok("User modified successfully");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
 
     }
+
 }
