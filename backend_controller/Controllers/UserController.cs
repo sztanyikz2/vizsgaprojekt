@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using vizsgaController.Dtos;
@@ -68,6 +69,33 @@ namespace vizsgaController.Controllers
             return Ok();
         }
 
-       
+        [Authorize(Roles = "Admin")]
+        [HttpPut("/rolemodify")]
+        public ActionResult RoleModify(int userid)
+        {
+            try
+            {
+                _model.RoleModify(userid);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        [HttpPut("/modifypassword")]
+        public ActionResult ModyfiyPassword(string username, string password)
+        {
+            try
+            {
+                _model.ModyfiyPassword(username, password);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
