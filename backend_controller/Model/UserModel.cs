@@ -6,10 +6,10 @@ using vizsgaController.Persistence;
 
 namespace vizsgaController.Model
 {
-    public class LoginModel :ILoginModel
+    public class UserModel :IUserModel
     {
-        private readonly VizsgaDbContext _context;
-        public LoginModel(VizsgaDbContext context)
+        private readonly NewsDbContext _context;
+        public UserModel(NewsDbContext context)
         {
             _context = context;
         }

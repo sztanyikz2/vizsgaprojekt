@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace vizsgaController.Persistence
 {
-    public class VizsgaDbContext : DbContext
+    public class NewsDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public VizsgaDbContext(DbContextOptions<VizsgaDbContext> options) : base(options) { }
+        public NewsDbContext(DbContextOptions<NewsDbContext> options) : base(options) { }
     }
     [Index(nameof(Username), nameof(Useremail), IsUnique =true)]
     public class User
