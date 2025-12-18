@@ -11,6 +11,7 @@ namespace vizsgaController.Persistence
         public DbSet<Category> Categories { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Image> Images { get; set; }
         public NewsDbContext(DbContextOptions<NewsDbContext> options) : base(options) { }
     }
     [Index(nameof(Username), nameof(Useremail), IsUnique =true)]
@@ -74,5 +75,18 @@ namespace vizsgaController.Persistence
         public int PostID { get; set; }
         public string CommentContent { get; set; }
         public DateTime CommentCreated_at { get; set; }
+    }
+    public class Image
+    {
+        public int ImageId { get; set; }
+
+        public byte[] ImageContent { get; set; }
+
+        // MIME típus (image/png, image/jpeg)
+        public string ContentType { get; set; }
+
+        // opcionális: milyen entitáshoz tartozik a kép
+        public int PostId { get; set; }
+        public Post Post  { get; set; }
     }
 }
