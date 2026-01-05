@@ -13,8 +13,8 @@ namespace vizsgaController.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserModel _model;
-        public UserController(UserModel model)
+        private readonly IUserModel _model;
+        public UserController(IUserModel model)
         {
             _model = model;
         }
@@ -44,7 +44,7 @@ namespace vizsgaController.Controllers
                 var user = _model.ValidateUser(username, password);
                 if (user == null)
                 {
-                    return null;
+                    return Unauthorized("Invalid username or password");
                 }
                 List<Claim> claims = new()
                 {
@@ -84,12 +84,13 @@ namespace vizsgaController.Controllers
             }
 
         }
+        [Authorize]
         [HttpPut("/modifypassword")]
-        public ActionResult ModyfiyPassword(string username, string password)
+        public ActionResult ModifyPassword(string username, string password)
         {
             try
             {
-                _model.ModyfiyPassword(username, password);
+                _model.ModifyPassword(username, password);
                 return Ok();
             }
             catch (Exception ex)

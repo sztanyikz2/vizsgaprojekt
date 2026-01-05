@@ -32,8 +32,8 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [HttpGet("searchpost")]
-        public IActionResult GetPostBySeatch([FromQuery] string title)
+        [HttpGet("/searchpost")]
+        public IActionResult GetPostBySearch([FromQuery] string title)
         {
             try
             {

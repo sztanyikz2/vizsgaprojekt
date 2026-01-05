@@ -49,6 +49,7 @@ namespace vizsgaController
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
