@@ -61,7 +61,6 @@ namespace vizsgaController.Model
         }
         public void DeleteOwnPost(int postid, int userid)
         {
-
             using var trx = _context.Database.BeginTransaction();
             {
                 _context.Posts.Remove(_context.Posts.Where(x => x.PostID == postid && x.UserID == userid).FirstOrDefault()); ///usert valahogyan használni kellene, összekötni
@@ -74,10 +73,30 @@ namespace vizsgaController.Model
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                var post = _context.Posts.Where(x => x.PostID == postId && x.UserID == userId).FirstOrDefault();
-                if (post != null)
+                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == userId).FirstOrDefault();
+                if (post != null && user!=null)
                 {
-                    post.Favourite = true;
+                    user.Favourites.Add(post);
+                    _context.SaveChanges();
+                    trx.Commit();
+                }
+                else
+                {
+                    throw new InvalidDataException("Post or User not found");
+                }
+            }
+
+        }
+        public void UnfavouritePost(int postId, int userId)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == userId).FirstOrDefault();
+                if (post != null && user!=null && user.Favourites.Contains(post))
+                {
+                    user.Favourites.Remove(post);
                     _context.SaveChanges();
                     trx.Commit();
                 }
@@ -114,8 +133,43 @@ namespace vizsgaController.Model
                 }
             }
         }
-        public void VoteOnPost()
+        public void UpVoteOnPost(int postId, int userid)
         {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == userid).FirstOrDefault();
+                if (post != null && user!=null && user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                {
+                    post.Upvotes ++;
+                    user.Upvoted_Posts.Add(post);
+                    _context.SaveChanges();
+                    trx.Commit();
+                }
+                else
+                {
+                    throw new InvalidDataException("Post or User not found");
+                }
+            }
+        }
+        public void DownVoteOnPost(int postId, int userid)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == userid).FirstOrDefault();
+                if (post != null && user != null && user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                {
+                    post.Downvotes++;
+                    user.Downvoted_Posts.Add(post);
+                    _context.SaveChanges();
+                    trx.Commit();
+                }
+                else
+                {
+                    throw new InvalidDataException("Post or User not found");
+                }
+            }
         }
         public void CommentOnPost()
         {
