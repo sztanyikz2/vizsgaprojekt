@@ -65,7 +65,7 @@ namespace vizsgaController.Model
                 }
                 user.Userpassword = HashPassword(password, "reddit2");
                 _context.SaveChanges();
-               trx.Commit ();
+                trx.Commit();
             }
         }
     }
