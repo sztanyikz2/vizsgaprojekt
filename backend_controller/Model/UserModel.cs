@@ -44,18 +44,28 @@ namespace vizsgaController.Model
         {
             using var trx= _context.Database.BeginTransaction();
             {
-                _context.Users.Where(x => x.UserID == userid).FirstOrDefault().Role = "Admin";
+                var user = _context.Users.Where(x => x.UserID == userid).FirstOrDefault();
+                if (user == null)
+                {
+                    throw new InvalidOperationException("User not found");
+                }
+                user.Role = "Admin";
                 _context.SaveChanges();
                 trx.Commit();
             }
         }
-        public void ModyfiyPassword(string username, string password)
+        public void ModifyPassword(string username, string password)
         {
             using var trx=_context.Database.BeginTransaction();
             {
-                _context.Users.Where(x => x.Username == username).FirstOrDefault().Userpassword= password;
+                var user = _context.Users.Where(x => x.Username == username).FirstOrDefault();
+                if (user == null)
+                {
+                    throw new InvalidOperationException("User not found");
+                }
+                user.Userpassword = HashPassword(password, "reddit2");
                 _context.SaveChanges();
-               trx.Commit ();
+                trx.Commit();
             }
         }
     }

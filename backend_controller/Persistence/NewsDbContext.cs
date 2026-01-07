@@ -24,6 +24,9 @@ namespace vizsgaController.Persistence
         public string Useremail { get; set; }
         public string Userpassword { get; set; }
         public string Role { get; set; } = "User";
+        public ICollection<Post> Favourites { get; set; }
+        public ICollection<Post> Upvoted_Posts { get; set; }
+        public ICollection<Post> Downvoted_Posts { get; set; }
     }
     public class Post
     {
@@ -43,7 +46,6 @@ namespace vizsgaController.Persistence
         public List<Comment> Comments { get; set; }
         public Category Category { get; set; }
         public User User { get; set; }
-        public bool Favourite { get; set; }
     }
     [Index(nameof(Categoryname), IsUnique =true)]
     public class Category

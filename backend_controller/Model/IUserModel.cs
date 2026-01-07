@@ -7,6 +7,6 @@ namespace vizsgaController.Model
         public void Registration(string name, string password);
         public User ValidateUser(string username, string password);
         public void RoleModify(int userid);
-        public void ModyfiyPassword(string username, string password);
+        public void ModifyPassword(string username, string password);
     }
 }
