@@ -44,7 +44,7 @@ namespace vizsgaController.Controllers
                 var user = _model.ValidateUser(username, password);
                 if (user == null)
                 {
-                    return null;
+                    return NotFound();
                 }
                 List<Claim> claims = new()
                 {
