@@ -40,21 +40,54 @@ namespace vizsgaController.Model
             }
             throw new InvalidDataException("Töltsd ki a keresőmezőt, pretty please");
         }
+        public void DeleteUsers(int id)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                _context.Users.Remove(_context.Users.Where(x => x.UserID == id).FirstOrDefault());
+                _context.SaveChanges();
+                trx.Commit();
+            }
+        }
+        public void ModifyUsers(int id, string name)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                var user = _context.Users.Where(x => x.UserID == id).FirstOrDefault();
+                if (user != null)
+                {
+                    user.Username = name;
+                    _context.SaveChanges();
+                    trx.Commit();
+                }
+                else
+                {
+                    throw new InvalidDataException("User not found");
+                }
+            }
+        }
+        public void CreatePost(PostDTO source)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                _context.Posts.Add(new Post
+                {
+                    PostID = source.postID,
+                    UserID = source.userID,
+                    CategoryID = source.categoryID,
+                    Title = source.title,
+                    Content = source.content,
+                    Created_at = DateTime.UtcNow
+                });
+                _context.SaveChanges();
+                trx.Commit();
+            }
+        }
         public void DeletePost(int id)
         {
             using var trx = _context.Database.BeginTransaction();
             {
                 _context.Remove(_context.Posts.Where(x => x.PostID == id).First());
-                _context.SaveChanges();
-                trx.Commit();
-            }
-        }
-        public void ModerateComments(int id)
-        {
-
-            using var trx = _context.Database.BeginTransaction();
-            {
-                _context.Comments.Remove(_context.Comments.Where(x => x.CommentID == id).FirstOrDefault());
                 _context.SaveChanges();
                 trx.Commit();
             }
@@ -75,7 +108,7 @@ namespace vizsgaController.Model
             {
                 var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
                 var user = _context.Users.Where(x => x.UserID == userId).FirstOrDefault();
-                if (post != null && user!=null)
+                if (post != null && user != null)
                 {
                     user.Favourites.Add(post);
                     _context.SaveChanges();
@@ -94,7 +127,7 @@ namespace vizsgaController.Model
             {
                 var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
                 var user = _context.Users.Where(x => x.UserID == userId).FirstOrDefault();
-                if (post != null && user!=null && user.Favourites.Contains(post))
+                if (post != null && user != null && user.Favourites.Contains(post))
                 {
                     user.Favourites.Remove(post);
                     _context.SaveChanges();
@@ -107,44 +140,30 @@ namespace vizsgaController.Model
             }
 
         }
-        public void DeleteUsers(int id)
-        {
-            using var trx = _context.Database.BeginTransaction();
-            {
-                _context.Users.Remove(_context.Users.Where(x => x.UserID == id).FirstOrDefault());
-                _context.SaveChanges();
-                trx.Commit();
-            }
-        }
-        public void ModifyUsers(int id, string name)
-        {
-            using var trx = _context.Database.BeginTransaction();
-            {
-                var user = _context.Users.Where(x => x.UserID == id).FirstOrDefault();
-                if (user != null)
-                {
-                    user.Username = name ;
-                    _context.SaveChanges();
-                    trx.Commit();
-                }
-                else
-                {
-                    throw new InvalidDataException("User not found");
-                }
-            }
-        }
         public void UpVoteOnPost(int postId, int userid)
         {
             using var trx = _context.Database.BeginTransaction();
             {
                 var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
                 var user = _context.Users.Where(x => x.UserID == userid).FirstOrDefault();
-                if (post != null && user!=null && user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                if (post != null && user != null)
                 {
-                    post.Upvotes ++;
-                    user.Upvoted_Posts.Add(post);
-                    _context.SaveChanges();
-                    trx.Commit();
+                    if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                    {
+                        post.Upvotes++;
+                        user.Upvoted_Posts.Add(post);
+                        _context.SaveChanges();
+                        trx.Commit();
+                    }
+                    else if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == true)
+                    {
+                        post.Downvotes--;
+                        user.Downvoted_Posts.Remove(post);
+                        post.Upvotes++;
+                        user.Upvoted_Posts.Add(post);
+                        _context.SaveChanges();
+                        trx.Commit();
+                    }
                 }
                 else
                 {
@@ -158,12 +177,24 @@ namespace vizsgaController.Model
             {
                 var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
                 var user = _context.Users.Where(x => x.UserID == userid).FirstOrDefault();
-                if (post != null && user != null && user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                if (post != null && user != null)
                 {
-                    post.Downvotes++;
-                    user.Downvoted_Posts.Add(post);
-                    _context.SaveChanges();
-                    trx.Commit();
+                    if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                    {
+                        post.Downvotes++;
+                        user.Downvoted_Posts.Add(post);
+                        _context.SaveChanges();
+                        trx.Commit();
+                    }
+                    else if (user.Upvoted_Posts.Contains(post) == true && user.Downvoted_Posts.Contains(post) == true)
+                    {
+                        post.Upvotes--;
+                        user.Upvoted_Posts.Remove(post);
+                        post.Downvotes++;
+                        user.Downvoted_Posts.Add(post);
+                        _context.SaveChanges();
+                        trx.Commit();
+                    }
                 }
                 else
                 {
@@ -171,12 +202,74 @@ namespace vizsgaController.Model
                 }
             }
         }
-        public void CommentOnPost()
+        public void CommentOnPost(CommentDTO source)
         {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                var post = _context.Posts.Where(x => x.PostID == source.postID).FirstOrDefault();
+                if (post != null) 
+                {
+                    throw new InvalidDataException("Post not found");
+                }
+                _context.Comments.Add(new Comment
+                {
+                    PostID = source.postID,
+                    CommentID = source.commentID,
+                    CommentContent = source.commentcoontent,
+                    CommentCreated_at = DateTime.UtcNow,
+                });
+                _context.SaveChanges();
+                trx.Commit();
+            }
         }
-       
-        public void PostContent()
+        public void DeleteComments(int id)
         {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                _context.Comments.Remove(_context.Comments.Where(x => x.CommentID == id).FirstOrDefault());
+                _context.SaveChanges();
+                trx.Commit();
+            }
+        }
+        public void CreateCategory(CategoryDTO source)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                _context.Categories.Add(new Category
+                {
+                    CategoryID = source.categoryID,
+                    Categoryname = source.categoryname,
+                    CategoryDescription = source.categorydescription
+                });
+                _context.SaveChanges();
+                trx.Commit();
+            }
+        }
+        public void DeleteCategory(int id)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                _context.Categories.Remove(_context.Categories.Where(x => x.CategoryID == id).FirstOrDefault());
+                _context.SaveChanges();
+                trx.Commit();
+            }
+        }
+        public void CreateReport(ReportDTO source)
+        {
+            using var trx = _context.Database.BeginTransaction();
+            {
+                _context.Reports.Add(new Report
+                {
+                    ReportID = source.reportID,
+                    PostID = source.postID,
+                    UserID = source.userID,
+                    ReportReason = source.reportreason,
+                    ReportCreated_at = DateTime.UtcNow,
+                    ReportStatus = source.reportstatus
+                });
+                _context.SaveChanges();
+                trx.Commit();
+            }
         }
         public void ManageSiteSettings()
         {
