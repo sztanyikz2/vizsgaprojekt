@@ -34,8 +34,7 @@ namespace vizsgaController.Model
                 {
                     title = x.Title,
                     content = x.Content,
-                    created_at = x.Created_at,
-                    deleted_at = x.Deleted_at,
+                    created_at = x.Created_at
                 });
             }
             throw new InvalidDataException("Töltsd ki a keresőmezőt, pretty please");
