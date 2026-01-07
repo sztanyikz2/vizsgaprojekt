@@ -40,10 +40,9 @@ namespace vizsgaController.Persistence
         [Required]
         public string Content { get; set; }
         public DateTime Created_at { get; set; }
-        public DateTime Deleted_at { get; set; }
         public int Upvotes { get; set; }
         public int Downvotes { get; set; }
-        public List<Comment> Comments { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         public Category Category { get; set; }
         public User User { get; set; }
     }
