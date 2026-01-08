@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using vizsgaController.Dtos;
 using vizsgaController.Model;
 
 namespace vizsgaController.Controllers
@@ -15,7 +16,7 @@ namespace vizsgaController.Controllers
         {
             _model = model;
         }
-        [HttpGet("/searchuser")]
+        [HttpGet("/search_user")]
         public IActionResult GetUserNameBySearch([FromQuery] string name)
         {
             try
@@ -32,7 +33,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [HttpGet("/searchpost")]
+        [HttpGet("/search_post")]
         public IActionResult GetPostBySearch([FromQuery] string title)
         {
             try
@@ -49,80 +50,10 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
+
         [Authorize(Roles = "Admin")]
-        [HttpDelete("deletepost")]
-        public IActionResult DeletePost([FromQuery] int id)
-        {
-            try
-            {
-                _model.DeletePost(id);
-                return Ok("Post deleted successfully");
-            }
-            catch (InvalidDataException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("moderatecomments")]
-        public IActionResult ModerateComments([FromQuery] int id)
-        {
-            try
-            {
-                _model.ModerateComments(id);
-                return Ok("Comment moderated successfully");
-            }
-            catch (InvalidDataException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
-        [Authorize(Roles = "User")]
-        [HttpDelete("deleteownpost")]
-        public IActionResult DeleteOwnPost([FromQuery] int postid, [FromQuery] int userid)
-        {
-            try
-            {
-                _model.DeleteOwnPost(postid, userid);
-                return Ok("Saját poszt sikeresen törölve");
-            }
-            catch (InvalidDataException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
-        [HttpPost("favouriteposts")]
-        public IActionResult FavouritePosts([FromQuery] int postID, [FromQuery] int userID)
-        {
-            try
-            {
-                _model.FavouritePost(postID, userID);
-                return Ok("Poszt sikeresen hozzáadva a kedvencekhez");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("manageusers")]
-        public IActionResult ManageUsers([FromQuery] int id)
+        [HttpDelete("/delete_users")]
+        public IActionResult DeleteUsers([FromQuery] int id)
         {
             try
             {
@@ -140,8 +71,8 @@ namespace vizsgaController.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("modifyusers")]
-        public IActionResult ModifyUsers([FromQuery] int id, [FromQuery] string name)
+        [HttpPut("/modify_user")]
+        public IActionResult ModifyUser([FromQuery] int id, [FromQuery] string name)
         {
             try
             {
@@ -157,7 +88,222 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
+        [HttpDelete("/create_posts")]
+        public IActionResult CreatePost([FromBody] PostDTO source)
+        {
+            try
+            {
+                _model.CreatePost(source);
+                return Ok("Post created successfully");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
 
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("/delete_posts")]
+        public IActionResult DeletePosts([FromQuery] int id)
+        {
+            try
+            {
+                _model.DeletePost(id);
+                return Ok("Post deleted successfully");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpDelete("/delete_own_post")]
+        public IActionResult DeleteOwnPost([FromQuery] int postid, [FromQuery] int userid)
+        {
+            try
+            {
+                _model.DeleteOwnPost(postid, userid);
+                return Ok("Your post has been deleted");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpPost("/favourite_posts")]
+        public IActionResult FavouritePosts([FromQuery] int postID, [FromQuery] int userID)
+        {
+            try
+            {
+                _model.FavouritePost(postID, userID);
+                return Ok("Post added to Favourites");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpPost("/unfavourite_posts")]
+        public IActionResult UnfavouritePosts([FromQuery] int postID, [FromQuery] int userID)
+        {
+            try
+            {
+                _model.UnfavouritePost(postID, userID);
+                return Ok("Post removed from Favourites");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpPost("/upvote")]
+        public IActionResult Upvote([FromQuery] int postID, [FromQuery] int userID)
+        {
+            try
+            {
+                _model.UpVoteOnPost(postID, userID);
+                return Ok("Upvoted");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpPost("/downvote")]
+        public IActionResult Downvote([FromQuery] int postID, [FromQuery] int userID)
+        {
+            try
+            {
+                _model.DownVoteOnPost(postID, userID);
+                return Ok("Downvoted");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpPost("/comment")]
+        public IActionResult Comment([FromBody] CommentDTO source)
+        {
+            try
+            {
+                _model.CommentOnPost(source);
+                return Ok("Comment posted");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("/delete_comments")]
+        public IActionResult DeleteSelectedComment([FromQuery] int id)
+        {
+            try
+            {
+                _model.DeleteComments(id);
+                return Ok("Comment deleted successfully");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("/create_category")]
+        public IActionResult CreateCat([FromBody] CategoryDTO source)
+        {
+            try
+            {
+                _model.CreateCategory(source);
+                return Ok("Category created successfully");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("/delete_category")]
+        public IActionResult DeleteSelectedCategory([FromQuery] int id)
+        {
+            try
+            {
+                _model.DeleteCategory(id);
+                return Ok("Category deleted successfully");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
+        [HttpDelete("/create_report")]
+        public IActionResult CreateRep([FromBody] ReportDTO source)
+        {
+            try
+            {
+                _model.CreateReport(source);
+                return Ok("Report submitted successfully");
+            }
+            catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Hiba történt");
+            }
+        }
     }
-
 }
