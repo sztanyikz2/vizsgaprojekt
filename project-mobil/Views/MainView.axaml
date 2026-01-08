@@ -1,0 +1,230 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:project_mobil.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
+             x:Class="project_mobil.Views.MainView"
+             x:DataType="vm:MainViewModel"
+             Background="#0f1115">
+  <Design.DataContext>
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+  <UserControl.Resources>
+    <!-- Colors matching CSS variables -->
+    <SolidColorBrush x:Key="BgBrush" Color="#0f1115"/>
+    <SolidColorBrush x:Key="FgBrush" Color="#e2e4e9"/>
+    <SolidColorBrush x:Key="MutedBrush" Color="#7a828a"/>
+    <SolidColorBrush x:Key="CardBrush" Color="#1a1e24"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="#272b33"/>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <!-- Sidebar link style -->
+    <Style Selector="Button.sidebar-link">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="#e2e4e9"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Left"/>
+      <Setter Property="Padding" Value="12,10"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Button.sidebar-link:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#0f1115"/>
+    </Style>
+    <Style Selector="Button.sidebar-link:pointerover">
+      <Setter Property="Foreground" Value="#7a828a"/>
+    </Style>
+    <Style Selector="Button.sidebar-link:pressed /template/ ContentPresenter">
+      <Setter Property="Background" Value="#272b33"/>
+    </Style>
+    
+    <!-- List item border style -->
+    <Style Selector="Border.list-item">
+      <Setter Property="Background" Value="#1a1e24"/>
+      <Setter Property="BorderBrush" Value="#272b33"/>
+      <Setter Property="BorderThickness" Value="1,0,1,1"/>
+    </Style>
+    <Style Selector="Border.list-item-first">
+      <Setter Property="Background" Value="#1a1e24"/>
+      <Setter Property="BorderBrush" Value="#272b33"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="6,6,0,0"/>
+    </Style>
+    <Style Selector="Border.list-item-last">
+      <Setter Property="Background" Value="#1a1e24"/>
+      <Setter Property="BorderBrush" Value="#272b33"/>
+      <Setter Property="BorderThickness" Value="1,0,1,1"/>
+      <Setter Property="CornerRadius" Value="0,0,6,6"/>
+    </Style>
+    
+    <!-- Menu button style -->
+    <Style Selector="Button.menu-btn">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="#e2e4e9"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="8"/>
+      <Setter Property="FontSize" Value="20"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.menu-btn:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#272b33"/>
+    </Style>
+  </UserControl.Styles>
+
+  <SplitView x:Name="MainSplitView" 
+             DisplayMode="Overlay" 
+             OpenPaneLength="280" 
+             PanePlacement="Left"
+             PaneBackground="#1a1e24"
+             IsPaneOpen="False">
+    
+    <!-- Side Panel (Menu) -->
+    <SplitView.Pane>
+      <DockPanel>
+        <!-- Panel Header -->
+        <Border DockPanel.Dock="Top" Background="#1a1e24" BorderBrush="#272b33" BorderThickness="0,0,0,1" Padding="16,12">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="Menu" FontSize="18" FontWeight="SemiBold" Foreground="#e2e4e9" VerticalAlignment="Center"/>
+            <Button Grid.Column="1" Classes="menu-btn" Content="?" Click="ClosePane_Click"/>
+          </Grid>
+        </Border>
+        
+        <!-- Panel Content -->
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="12" Spacing="16">
+            
+            <!-- Top Posts Section -->
+            <StackPanel>
+              <TextBlock Text="? TOP POSTS" FontSize="11" Foreground="#7a828a" FontWeight="SemiBold" Margin="0,0,0,8"/>
+              <StackPanel>
+                <Border Classes="list-item-first">
+                  <Button Classes="sidebar-link" Content="Liked"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Visited"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Controversial"/>
+                </Border>
+                <Border Classes="list-item-last">
+                  <Button Classes="sidebar-link" Content="Disliked"/>
+                </Border>
+              </StackPanel>
+            </StackPanel>
+
+            <!-- Categories Section -->
+            <StackPanel>
+              <TextBlock Text="? CATEGORIES" FontSize="11" Foreground="#7a828a" FontWeight="SemiBold" Margin="0,0,0,8"/>
+              <StackPanel>
+                <Border Classes="list-item-first">
+                  <Button Classes="sidebar-link" Content="Gaming"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Shows/Movies"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Politics"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Animals"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Books"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Health"/>
+                </Border>
+                <Border Classes="list-item">
+                  <Button Classes="sidebar-link" Content="Tech/Gadgets"/>
+                </Border>
+                <Border Classes="list-item-last">
+                  <Button Classes="sidebar-link" Content="Food/Cooking"/>
+                </Border>
+              </StackPanel>
+            </StackPanel>
+
+            <!-- Other Links Section -->
+            <StackPanel>
+              <Border Classes="list-item-first">
+                <Button Classes="sidebar-link" Content="? Favorite Posts"/>
+              </Border>
+              <Border Classes="list-item">
+                <Button Classes="sidebar-link" Content="? About Us"/>
+              </Border>
+              <Border Classes="list-item">
+                <Button Classes="sidebar-link" Content="? Settings"/>
+              </Border>
+              <Border Classes="list-item-last">
+                <Button Classes="sidebar-link" Content="? Suck me twin"/>
+              </Border>
+            </StackPanel>
+            
+            <!-- Dark/Light Mode Card (moved to sidebar for mobile) -->
+            <Border Background="#0f1115" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Padding="12">
+              <StackPanel Spacing="8">
+                <TextBlock Text="Theme" FontSize="12" Foreground="#7a828a"/>
+                <Slider Minimum="0" Maximum="100" Value="100"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </DockPanel>
+    </SplitView.Pane>
+    
+    <!-- Main Content -->
+    <DockPanel>
+      <!-- Navbar -->
+      <Border DockPanel.Dock="Top" Background="#1a1e24" BorderBrush="#272b33" BorderThickness="0,0,0,1" Padding="8,8">
+        <Grid ColumnDefinitions="Auto,*">
+          <!-- Hamburger Menu Button -->
+          <Button Grid.Column="0" Classes="menu-btn" Content="?" Click="OpenPane_Click" Margin="0,0,8,0"/>
+          
+          <!-- Search Bar -->
+          <Border Grid.Column="1" Background="#0f1115" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Padding="8,6">
+            <Grid ColumnDefinitions="Auto,*">
+              <TextBlock Grid.Column="0" Text="??" Foreground="#7a828a" VerticalAlignment="Center" Margin="0,0,8,0"/>
+              <TextBox Grid.Column="1" Watermark="Search" Background="Transparent" BorderThickness="0" Foreground="#e2e4e9"/>
+            </Grid>
+          </Border>
+        </Grid>
+      </Border>
+
+      <!-- Scrollable Content -->
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="12" Spacing="12">
+          
+          <!-- Template1 Card -->
+          <Border Background="#1a1e24" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Padding="12">
+            <StackPanel Spacing="10">
+              <TextBlock Text="Template1" FontSize="16" FontWeight="SemiBold" Foreground="#e2e4e9"/>
+              <Border Background="#0f1115" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Height="180">
+                <TextBlock Text="???" FontSize="48" Opacity="0.6" Foreground="#b7bcc4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+            </StackPanel>
+          </Border>
+
+          <!-- Template2 Card -->
+          <Border Background="#1a1e24" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Padding="12">
+            <StackPanel Spacing="10">
+              <TextBlock Text="Template2" FontSize="16" FontWeight="SemiBold" Foreground="#e2e4e9"/>
+              <Border Background="#0f1115" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Height="180">
+                <TextBlock Text="???" FontSize="48" Opacity="0.6" Foreground="#b7bcc4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+            </StackPanel>
+          </Border>
+
+          <!-- Ads Section (at bottom on mobile) -->
+          <StackPanel Spacing="10" Margin="0,8,0,0">
+            <TextBlock Text="Ads" FontSize="13" FontWeight="SemiBold" Foreground="#7a828a"/>
+            <Border Background="#1a1e24" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Height="200"/>
+            <Border Background="#1a1e24" BorderBrush="#272b33" BorderThickness="1" CornerRadius="6" Height="100"/>
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </DockPanel>
+  </SplitView>
+</UserControl>

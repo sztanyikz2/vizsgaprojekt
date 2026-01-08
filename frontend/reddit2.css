@@ -81,3 +81,18 @@ body {
   border-radius: 6px;
 }
 /* Heights for ad boxes are now set inline in HTML for clarity. */
+
+/* Sidebar links */
+.sidebar-link {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+.sidebar-link:hover {
+  color: var(--muted);
+}
+.list-group-item:hover {
+  background: var(--bg);
+  cursor: pointer;
+}
