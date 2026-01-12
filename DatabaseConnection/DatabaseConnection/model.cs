@@ -1,6 +1,8 @@
-﻿using System;
+﻿using DatabaseConnection.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +25,7 @@ namespace DatabaseConnection
         }
         public Task<List<PostDTO>> GetPostsBySearch(string search)
         {
-            return client.GetFromJsonAsync<List<POstDTO>>($"/api/vizsgacontroller/searchpost/{search}");
+            return client.GetFromJsonAsync<List<PostDTO>>($"/api/vizsgacontroller/searchpost/{search}");
         }
         public async Task DeletePost(int id)
         {
