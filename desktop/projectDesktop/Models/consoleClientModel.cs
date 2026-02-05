@@ -55,6 +55,7 @@ public class consoleClientModel
 
     public async Task DeleteOwnPost(DeleteOwnPostDTO deleteOwnPost)
     {
-        var resp = 
+        var resp = await _httpClient.DeleteAsync($"api/news/delete_own_posts/{deleteOwnPost.id}");
+        resp.EnsureSuccessStatusCode();
     }
 }
