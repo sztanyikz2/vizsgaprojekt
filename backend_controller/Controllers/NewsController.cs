@@ -178,13 +178,14 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
+        
         [Authorize(Roles = "User")]
-        [HttpPost("/upvote")]
-        public IActionResult Upvote(UpVoteDTO dto)
+        [HttpPost("/vote")]
+        public IActionResult Upvote(VoteDTO dto)
         {
             try
             {
-                _model.UpVoteOnPost(dto);
+                _model.voteOnPost(dto);
                 return Ok("Upvoted");
             }
             catch (InvalidOperationException ex)
@@ -196,24 +197,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [Authorize(Roles = "User")]
-        [HttpPost("/downvote")]
-        public IActionResult Downvote(DownVoteDTO dto)
-        {
-            try
-            {
-                _model.DownVoteOnPost(dto);
-                return Ok("Downvoted");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
+        
         [Authorize(Roles = "User")]
         [HttpPost("/comment")]
         public IActionResult Comment([FromBody] CommentDTO source)

@@ -137,76 +137,75 @@ namespace vizsgaController.Model
                     throw new InvalidDataException("Post or User not found");
                 }
             }
+            
+        }
 
-        }
-        public void UpVoteOnPost(UpVoteDTO dto)
+
+        public void voteOnPost(VoteDTO dto)
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                var post = _context.Posts.Where(x => x.PostID == dto.PostId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == dto.UserId).FirstOrDefault();
+                var post = _context.Posts.Where(x => x.PostID == dto.postId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == dto.userId).FirstOrDefault();
                 if (post != null && user != null)
                 {
-                    if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                    if (!user.Upvoted_Posts.Contains(post) && !user.Downvoted_Posts.Contains(post))
                     {
-                        post.Upvotes++;
-                        user.Upvoted_Posts.Add(post);
+                        if (dto.isPositive)
+                        {
+                            post.Votes++;
+                        }
+                        else
+                        {
+                            post.Votes--;
+                        }
                         _context.SaveChanges();
                         trx.Commit();
                     }
-                    else if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == true)
+                    else
                     {
-                        post.Downvotes--;
-                        user.Downvoted_Posts.Remove(post);
-                        post.Upvotes++;
-                        user.Upvoted_Posts.Add(post);
-                        _context.SaveChanges();
-                        trx.Commit();
+                        throw new InvalidDataException("Post or User not found");
                     }
-                }
-                else
-                {
-                    throw new InvalidDataException("Post or User not found");
                 }
             }
         }
-        public void DownVoteOnPost(DownVoteDTO dto)
+
+        public void removeVote(removeVoteDTO dto)
         {
-            using var trx = _context.Database.BeginTransaction();
+            var  post = _context.Posts.Where(x => x.PostID == dto.postId).FirstOrDefault();
+            var user = _context.Users.Where(x => x.UserID == dto.userId).FirstOrDefault();
+            if (post != null && user != null)
             {
-                var post = _context.Posts.Where(x => x.PostID == dto.PostId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == dto.UserId).FirstOrDefault();
-                if (post != null && user != null)
+                using (var trx = _context.Database.BeginTransaction())
                 {
-                    if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
+                    if (user.Upvoted_Posts.Contains(post))
                     {
-                        post.Downvotes++;
-                        user.Downvoted_Posts.Add(post);
-                        _context.SaveChanges();
-                        trx.Commit();
-                    }
-                    else if (user.Upvoted_Posts.Contains(post) == true && user.Downvoted_Posts.Contains(post) == true)
-                    {
-                        post.Upvotes--;
                         user.Upvoted_Posts.Remove(post);
-                        post.Downvotes++;
-                        user.Downvoted_Posts.Add(post);
+                        post.Votes--;
                         _context.SaveChanges();
                         trx.Commit();
                     }
-                }
-                else
-                {
-                    throw new InvalidDataException("Post or User not found");
+                    else if (user.Downvoted_Posts.Contains(post))
+                    {
+                        user.Downvoted_Posts.Remove(post);
+                        post.Votes++;
+                        _context.SaveChanges();
+                        trx.Commit();
+                    }
+                    else
+                    {
+                        throw new InvalidDataException("Post or User not found");
+                    }
                 }
             }
         }
+
         public void CommentOnPost(CommentDTO source)
         {
             using var trx = _context.Database.BeginTransaction();
             {
                 var post = _context.Posts.Where(x => x.PostID == source.postID).FirstOrDefault();
-                if (post != null) 
+                if (post == null) 
                 {
                     throw new InvalidDataException("Post not found");
                 }
