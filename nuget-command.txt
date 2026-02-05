@@ -1,0 +1,5 @@
+fix nugget repo:
+dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org
+
+fix nuget packages:
+dotnet restore
