@@ -9,11 +9,11 @@ namespace vizsgaController.Model
         public IEnumerable<PostDTO> GetPostsBySearch(string title);
         //users
         public void DeleteUsers(int id);
-        public void ModifyUsers(int id, string name);
+        public void ModifyUsers(ModifyUserDTO  source);
         //posts
         public void CreatePost(PostDTO source);
         public void DeletePost(int id);
-        public void DeleteOwnPost(int postid, int userid);
+        public void DeleteOwnPost(DeleteOwnPostDTO source);
         public void FavouritePost(int postId, int userId);
         public void UnfavouritePost(int postId, int userId);
         public void UpVoteOnPost(int postId, int userid);

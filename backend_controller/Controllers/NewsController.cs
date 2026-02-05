@@ -72,11 +72,11 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("/modify_user")]
-        public IActionResult ModifyUser([FromQuery] int id, [FromQuery] string name)
+        public IActionResult ModifyUser(ModifyUserDTO userDto)
         {
             try
             {
-                _model.ModifyUsers(id, name);
+                _model.ModifyUsers(userDto);
                 return Ok("User modified successfully");
             }
             catch (InvalidDataException ex)
@@ -126,11 +126,11 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpDelete("/delete_own_post")]
-        public IActionResult DeleteOwnPost([FromQuery] int postid, [FromQuery] int userid)
+        public IActionResult DeleteOwnPost(DeleteOwnPostDTO deleteOwnpost)
         {
             try
             {
-                _model.DeleteOwnPost(postid, userid);
+                _model.DeleteOwnPost(deleteOwnpost);
                 return Ok("Your post has been deleted");
             }
             catch (InvalidDataException ex)

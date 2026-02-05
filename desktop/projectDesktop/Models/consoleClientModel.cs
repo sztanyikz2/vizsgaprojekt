@@ -34,4 +34,27 @@ public class consoleClientModel
         var resp= await _httpClient.DeleteAsync($"api/news/delete_users/{id}");
         resp.EnsureSuccessStatusCode();
     }
+
+    public async Task ModifyUser(ModifyUserDTO modifyUser)
+    {
+        var resp = await _httpClient.PutAsJsonAsync($"api/news/modify_users", modifyUser);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task CreatePost(PostDTO post)
+    {
+        var resp = await _httpClient.PostAsJsonAsync($"api/news/create_posts", post);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeletePost(int id)
+    {
+        var resp = await _httpClient.DeleteAsync($"api/news/delete_posts/{id}");
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeleteOwnPost(DeleteOwnPostDTO deleteOwnPost)
+    {
+        var resp = 
+    }
 }
