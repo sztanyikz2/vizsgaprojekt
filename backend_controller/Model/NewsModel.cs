@@ -101,12 +101,12 @@ namespace vizsgaController.Model
                 trx.Commit();
             }
         }
-        public void FavouritePost(int postId, int userId)
+        public void FavouritePost(FavouritePostDTO favpost)
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == userId).FirstOrDefault();
+                var post = _context.Posts.Where(x => x.PostID == favpost.postId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == favpost.userId).FirstOrDefault();
                 if (post != null && user != null)
                 {
                     user.Favourites.Add(post);
@@ -120,12 +120,12 @@ namespace vizsgaController.Model
             }
 
         }
-        public void UnfavouritePost(int postId, int userId)
+        public void UnfavouritePost(UnfavouritePostDTO dto)
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == userId).FirstOrDefault();
+                var post = _context.Posts.Where(x => x.PostID == dto.PostId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == dto.UserId).FirstOrDefault();
                 if (post != null && user != null && user.Favourites.Contains(post))
                 {
                     user.Favourites.Remove(post);
@@ -139,12 +139,12 @@ namespace vizsgaController.Model
             }
 
         }
-        public void UpVoteOnPost(int postId, int userid)
+        public void UpVoteOnPost(UpVoteDTO dto)
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == userid).FirstOrDefault();
+                var post = _context.Posts.Where(x => x.PostID == dto.PostId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == dto.UserId).FirstOrDefault();
                 if (post != null && user != null)
                 {
                     if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)
@@ -170,12 +170,12 @@ namespace vizsgaController.Model
                 }
             }
         }
-        public void DownVoteOnPost(int postId, int userid)
+        public void DownVoteOnPost(DownVoteDTO dto)
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                var post = _context.Posts.Where(x => x.PostID == postId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == userid).FirstOrDefault();
+                var post = _context.Posts.Where(x => x.PostID == dto.PostId).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == dto.UserId).FirstOrDefault();
                 if (post != null && user != null)
                 {
                     if (user.Upvoted_Posts.Contains(post) == false && user.Downvoted_Posts.Contains(post) == false)

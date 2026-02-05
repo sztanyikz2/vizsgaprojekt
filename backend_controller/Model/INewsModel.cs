@@ -14,10 +14,10 @@ namespace vizsgaController.Model
         public void CreatePost(PostDTO source);
         public void DeletePost(int id);
         public void DeleteOwnPost(DeleteOwnPostDTO source);
-        public void FavouritePost(int postId, int userId);
-        public void UnfavouritePost(int postId, int userId);
-        public void UpVoteOnPost(int postId, int userid);
-        public void DownVoteOnPost(int postId, int userid);
+        public void FavouritePost(FavouritePostDTO source);
+        public void UnfavouritePost(UnfavouritePostDTO source);
+        public void UpVoteOnPost(UpVoteDTO source);
+        public void DownVoteOnPost(DownVoteDTO source);
         //coment
         public void CommentOnPost(CommentDTO source);
         public void DeleteComments(int id);

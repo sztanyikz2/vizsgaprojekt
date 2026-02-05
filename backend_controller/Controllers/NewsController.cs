@@ -144,11 +144,11 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpPost("/favourite_posts")]
-        public IActionResult FavouritePosts([FromQuery] int postID, [FromQuery] int userID)
+        public IActionResult FavouritePosts(FavouritePostDTO dto)
         {
             try
             {
-                _model.FavouritePost(postID, userID);
+                _model.FavouritePost(dto);
                 return Ok("Post added to Favourites");
             }
             catch (InvalidOperationException ex)
@@ -162,11 +162,11 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpPost("/unfavourite_posts")]
-        public IActionResult UnfavouritePosts([FromQuery] int postID, [FromQuery] int userID)
+        public IActionResult UnfavouritePosts(UnfavouritePostDTO dto)
         {
             try
             {
-                _model.UnfavouritePost(postID, userID);
+                _model.UnfavouritePost(dto);
                 return Ok("Post removed from Favourites");
             }
             catch (InvalidOperationException ex)
@@ -180,11 +180,11 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpPost("/upvote")]
-        public IActionResult Upvote([FromQuery] int postID, [FromQuery] int userID)
+        public IActionResult Upvote(UpVoteDTO dto)
         {
             try
             {
-                _model.UpVoteOnPost(postID, userID);
+                _model.UpVoteOnPost(dto);
                 return Ok("Upvoted");
             }
             catch (InvalidOperationException ex)
@@ -198,11 +198,11 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpPost("/downvote")]
-        public IActionResult Downvote([FromQuery] int postID, [FromQuery] int userID)
+        public IActionResult Downvote(DownVoteDTO dto)
         {
             try
             {
-                _model.DownVoteOnPost(postID, userID);
+                _model.DownVoteOnPost(dto);
                 return Ok("Downvoted");
             }
             catch (InvalidOperationException ex)
