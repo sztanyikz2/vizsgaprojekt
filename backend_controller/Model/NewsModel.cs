@@ -48,14 +48,14 @@ namespace vizsgaController.Model
                 trx.Commit();
             }
         }
-        public void ModifyUsers(int id, string name)
+        public void ModifyUsers(ModifyUserDTO dto)
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                var user = _context.Users.Where(x => x.UserID == id).FirstOrDefault();
+                var user = _context.Users.Where(x => x.UserID == dto.id).FirstOrDefault();
                 if (user != null)
                 {
-                    user.Username = name;
+                    user.Username = dto.name;
                     _context.SaveChanges();
                     trx.Commit();
                 }
@@ -91,12 +91,12 @@ namespace vizsgaController.Model
                 trx.Commit();
             }
         }
-        public void DeleteOwnPost(int postid, int userid)
+        public void DeleteOwnPost(DeleteOwnPostDTO dto)
         {
             using var trx = _context.Database.BeginTransaction();
             {
-                _context.Posts.Remove(_context.Posts.Where(x => x.PostID == postid && x.UserID == userid).FirstOrDefault()); ///usert valahogyan használni kellene, összekötni
-                _context.Comments.Remove(_context.Comments.Where(x => x.PostID == postid).FirstOrDefault());
+                _context.Posts.Remove(_context.Posts.Where(x => x.PostID == dto.id && x.UserID == dto.userId).FirstOrDefault()); ///usert valahogyan használni kellene, összekötni
+                _context.Comments.Remove(_context.Comments.Where(x => x.PostID == dto.id).FirstOrDefault());
                 _context.SaveChanges();
                 trx.Commit();
             }
