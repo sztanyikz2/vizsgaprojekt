@@ -15,7 +15,6 @@ namespace vizsgaController.Model
         public void DeletePost(int id);
         public void DeleteOwnPost(DeleteOwnPostDTO source);
         public void FavouritePost(FavouritePostDTO source);
-        public void UnfavouritePost(UnfavouritePostDTO source);
         public void voteOnPost(VoteDTO source);
         //coment
         public void CommentOnPost(CommentDTO source);

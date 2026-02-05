@@ -101,6 +101,7 @@ namespace vizsgaController.Model
                 trx.Commit();
             }
         }
+
         public void FavouritePost(FavouritePostDTO favpost)
         {
             using var trx = _context.Database.BeginTransaction();
@@ -109,7 +110,15 @@ namespace vizsgaController.Model
                 var user = _context.Users.Where(x => x.UserID == favpost.userId).FirstOrDefault();
                 if (post != null && user != null)
                 {
-                    user.Favourites.Add(post);
+
+                    if (favpost.addTo)
+                    {
+                        user.Favourites.Add(post);
+                    }
+                    else
+                    {
+                        user.Favourites.Remove(post);
+                    }
                     _context.SaveChanges();
                     trx.Commit();
                 }
@@ -120,26 +129,6 @@ namespace vizsgaController.Model
             }
 
         }
-        public void UnfavouritePost(UnfavouritePostDTO dto)
-        {
-            using var trx = _context.Database.BeginTransaction();
-            {
-                var post = _context.Posts.Where(x => x.PostID == dto.PostId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == dto.UserId).FirstOrDefault();
-                if (post != null && user != null && user.Favourites.Contains(post))
-                {
-                    user.Favourites.Remove(post);
-                    _context.SaveChanges();
-                    trx.Commit();
-                }
-                else
-                {
-                    throw new InvalidDataException("Post or User not found");
-                }
-            }
-            
-        }
-
 
         public void voteOnPost(VoteDTO dto)
         {

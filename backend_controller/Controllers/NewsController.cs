@@ -149,25 +149,14 @@ namespace vizsgaController.Controllers
             try
             {
                 _model.FavouritePost(dto);
-                return Ok("Post added to Favourites");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
-        [Authorize(Roles = "User")]
-        [HttpPost("/unfavourite_posts")]
-        public IActionResult UnfavouritePosts(UnfavouritePostDTO dto)
-        {
-            try
-            {
-                _model.UnfavouritePost(dto);
-                return Ok("Post removed from Favourites");
+                if (dto.addTo)
+                {
+                    return Ok("Post added to Favourites");
+                }
+                else
+                {
+                    return Ok("Post removed from Favourites");
+                }
             }
             catch (InvalidOperationException ex)
             {
