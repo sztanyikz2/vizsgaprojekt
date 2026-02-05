@@ -253,7 +253,7 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("/create_category")]
-        public IActionResult CreateCat([FromBody] CategoryDTO source)
+        public IActionResult CreateCat([FromBody] CategoryDTO source) //itt lehet [FromQuerry] kell?
         {
             try
             {

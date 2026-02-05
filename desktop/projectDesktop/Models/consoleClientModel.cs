@@ -82,4 +82,34 @@ public class consoleClientModel
         var resp = await _httpClient.PutAsJsonAsync($"api/news/downvote/", dto);
         resp.EnsureSuccessStatusCode();
     }
+
+    public async Task Comment(CommentDTO comment)
+    {
+        var resp = await _httpClient.PostAsJsonAsync($"api/news/comment", comment);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeleteComment(int id)
+    {
+        var resp = await _httpClient.DeleteAsync($"api/news/delete_comment/{id}");
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task CreateCategory(CategoryDTO category)
+    {
+        var resp = await _httpClient.PostAsJsonAsync($"api/news/create_category", category);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeleteCategory(int id)
+    {
+        var resp = await _httpClient.DeleteAsync($"api/news/delete_category/{id}");
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task CreateReport(ReportDTO report)
+    {
+        var resp = await _httpClient.PostAsJsonAsync($"api/news/create_report", report);
+        resp.EnsureSuccessStatusCode();
+    }
 }
