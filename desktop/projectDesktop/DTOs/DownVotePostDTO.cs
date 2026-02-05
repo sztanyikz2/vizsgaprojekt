@@ -1,7 +1,7 @@
 ﻿namespace projectDesktop.DTOs;
 
-public class FavouritePostDTO
+public class DownVotePostDTO
 {
-    public int postId { get; set; }
     public int userId { get; set; }
+    public int postId { get; set; }
 }

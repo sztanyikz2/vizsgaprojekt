@@ -58,4 +58,28 @@ public class consoleClientModel
         var resp = await _httpClient.DeleteAsync($"api/news/delete_own_posts/{deleteOwnPost.id}");
         resp.EnsureSuccessStatusCode();
     }
+
+    public async Task FavouritePosts(FavouritePostDTO dto)
+    {
+        var resp = await _httpClient.PutAsJsonAsync($"api/news/favourite_posts", dto);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task UnFavouritePosts(FavouritePostDTO dto)
+    {
+        var resp = await _httpClient.PutAsJsonAsync($"api/news/unfavourite_posts", dto);
+        resp.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpVotePost(UpVotePostDTO dto)
+    {
+        var resp = await _httpClient.PutAsJsonAsync($"api/news/upvote/", dto);
+        resp.EnsureSuccessStatusCode();
+    }
+    
+    public async Task DownVotePost(DownVotePostDTO dto)
+    {
+        var resp = await _httpClient.PutAsJsonAsync($"api/news/downvote/", dto);
+        resp.EnsureSuccessStatusCode();
+    }
 }
