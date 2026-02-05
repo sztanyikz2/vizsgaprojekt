@@ -3,18 +3,194 @@
         xmlns:vm="using:projectDesktop.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
         x:Class="projectDesktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="projectDesktop">
+        Title="Wireframe Layout"
+        Background="#0f1115"
+        Foreground="#e2e4e9">
+    
+    <Window.DataContext>
+        <vm:ViewModel/>
+    </Window.DataContext>
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+    <Window.Styles>
+        <!-- CSS Variable Equivalents -->
+        <Style Selector="Border.Card">
+            <Setter Property="Background" Value="#1a1e24"/>
+            <Setter Property="BorderBrush" Value="#272b33"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+        
+        <Style Selector="TextBlock.Muted">
+            <Setter Property="Foreground" Value="#7a828a"/>
+        </Style>
+        
+        <Style Selector="TextBlock.H6">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#7a828a"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <!-- Sidebar Links -->
+        <Style Selector="Button.SidebarLink">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#e2e4e9"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="0,1"/>
+        </Style>
+        <Style Selector="Button.SidebarLink:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1a1e24"/>
+            <Setter Property="Foreground" Value="#7a828a"/>
+        </Style>
 
+        <!-- Search Input Style -->
+        <Style Selector="TextBox.Search">
+            <Setter Property="Background" Value="#0f1115"/>
+            <Setter Property="Foreground" Value="#e2e4e9"/>
+            <Setter Property="BorderBrush" Value="#272b33"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- Navbar -->
+        <Border Grid.Row="0" Background="#1a1e24" BorderBrush="#272b33" BorderThickness="0,0,0,1" Padding="0,10">
+            <Grid ColumnDefinitions="Auto, *, Auto" MaxWidth="1320" HorizontalAlignment="Stretch">
+                <!-- Centered Container Logic via margins or explicit grid columns -->
+                <TextBox Grid.Column="1" 
+                         Classes="Search"
+                         Text="{Binding SearchText}"
+                         Watermark="Search"
+                         Margin="20,0"
+                         MaxWidth="800"
+                         HorizontalAlignment="Stretch">
+                    <TextBox.InnerLeftContent>
+                        <TextBlock Text="🔎" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    </TextBox.InnerLeftContent>
+                </TextBox>
+            </Grid>
+        </Border>
+
+        <!-- Main Container -->
+        <Grid Grid.Row="1" Margin="20" MaxWidth="1320" HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/> <!-- Left Sidebar (col-lg-3) -->
+                <ColumnDefinition Width="20"/>  <!-- Gutter -->
+                <ColumnDefinition Width="*"/>   <!-- Main Content (col-lg-6) -->
+                <ColumnDefinition Width="20"/>  <!-- Gutter -->
+                <ColumnDefinition Width="280"/> <!-- Right Sidebar (col-lg-3) -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Sidebar -->
+            <ScrollViewer Grid.Column="0">
+                <StackPanel Spacing="20">
+                    
+                    <!-- Top Posts -->
+                    <StackPanel>
+                        <TextBlock Classes="H6" Text="⚡ TOP POSTS"/>
+                        <Border Classes="Card" Padding="0">
+                            <ItemsControl ItemsSource="{Binding TopPostLinks}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Classes="SidebarLink" Content="{Binding }" Command="{Binding }"/> <!-- bind Name OpenLinkCommand -->
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Categories -->
+                    <StackPanel>
+                        <TextBlock Classes="H6" Text="▤ CATEGORIES"/>
+                        <Border Classes="Card" Padding="0">
+                            <ItemsControl ItemsSource="{Binding CategoryLinks}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Classes="SidebarLink" Content="{Binding }" Command="{Binding }"/>  <!-- bind Name OpenCategoryCommand -->
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Menu -->
+                    <Border Classes="Card" Padding="0">
+                        <StackPanel>
+                            <Button Classes="SidebarLink" Content="❤ Favorite Posts"/>
+                            <Button Classes="SidebarLink" Content="ℹ About Us"/>
+                            <Button Classes="SidebarLink" Content="⚙ Settings"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Main Content (Feed) -->
+            <ScrollViewer Grid.Column="2">
+                <ItemsControl ItemsSource="{Binding FeedItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Classes="Card" Margin="0,0,0,20">
+                                <StackPanel Spacing="15">
+                                    <TextBlock Text="{Binding }" FontSize="18" FontWeight="Medium"/> <!-- bind Title -->
+                                    
+                                    <!-- Image Placeholder -->
+                                    <Border Background="#1a1e24" 
+                                            BorderBrush="#272b33" 
+                                            BorderThickness="1" 
+                                            CornerRadius="6"
+                                            Height="300"
+                                            Width="500">
+                                        <Grid>
+                                            <TextBlock Text="🖼️" FontSize="54" Opacity="0.6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <!-- Actual image would be: <Image Source="{Binding ImageUrl}"/> -->
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Right Sidebar -->
+            <StackPanel Grid.Column="4" Spacing="20">
+                
+                <!-- Theme Slider -->
+                <Border Classes="Card">
+                    <StackPanel Spacing="10">
+                        <Label Target="ModeSlider" Content="{Binding SliderValue}"/>
+                        <Slider x:Name="ModeSlider" 
+                                Value="{Binding ThemeStrengthSliderValue}"  
+                                Minimum="0" 
+                                Maximum="100"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Ads -->
+                <StackPanel>
+                    <TextBlock Classes="H6" Text="Ads" Margin="0,0,0,10"/>
+                    
+                    <!-- Ad 1 -->
+                    <Border Classes="Card" Height="520" Margin="0,0,0,20">
+                        <TextBlock Text="Ad Space" HorizontalAlignment="Center" VerticalAlignment="Center" Classes="Muted"/>
+                    </Border>
+                    
+                    <!-- Ad 2 -->
+                    <Border Classes="Card" Height="120">
+                        <TextBlock Text="Ad Space" HorizontalAlignment="Center" VerticalAlignment="Center" Classes="Muted"/>
+                    </Border>
+                </StackPanel>
+
+            </StackPanel>
+        </Grid>
+    </Grid>
 </Window>
