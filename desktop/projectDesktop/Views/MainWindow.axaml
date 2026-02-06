@@ -167,7 +167,7 @@
                 <!-- Theme Slider -->
                 <Border Classes="Card">
                     <StackPanel Spacing="10">
-                        <Label Target="ModeSlider" Content="{Binding SliderValue}"/>
+                        <Label Target="ModeSlider" Content="{Binding }"/>
                         <Slider x:Name="ModeSlider" 
                                 Value="{Binding ThemeStrengthSliderValue}"  
                                 Minimum="0" 

@@ -18,7 +18,7 @@ namespace vizsgaController.Controllers
         {
             _model = model;
         }
-        [HttpPost("/registration")]
+        [HttpPost("registration")]
         public ActionResult Registration(string username, string password)
         {
             try
@@ -36,7 +36,7 @@ namespace vizsgaController.Controllers
             }
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public async Task<ActionResult> LogIn(string username, string password)
         {
             try
@@ -62,7 +62,7 @@ namespace vizsgaController.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("/logout")]
+        [HttpPost("logout")]
         public async Task<ActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -70,7 +70,7 @@ namespace vizsgaController.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("/rolemodify")]
+        [HttpPut("rolemodify")]
         public ActionResult RoleModify(int userid)
         {
             try
@@ -85,7 +85,7 @@ namespace vizsgaController.Controllers
 
         }
         [Authorize]
-        [HttpPut("/modifypassword")]
+        [HttpPut("modifypassword")]
         public ActionResult ModifyPassword(string username, string password)
         {
             try
