@@ -13,6 +13,57 @@ namespace vizsgaController.Persistence
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }
         public NewsDbContext(DbContextOptions<NewsDbContext> options) : base(options) { }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Post.User + Post.UserID -> User's authored posts (not a collection on User yet)
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Post.Category + Post.CategoryID -> Category
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.CategoryID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User.Favourites - many-to-many
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Favourites)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserFavourites"));
+
+            // User.Upvoted_Posts - many-to-many
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Upvoted_Posts)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserUpvotedPosts"));
+
+            // User.Downvoted_Posts - many-to-many
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Downvoted_Posts)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserDownvotedPosts"));
+
+            // Comment -> Post
+            modelBuilder.Entity<Comment>()
+                .HasOne<Post>()
+                .WithMany(p => p.Comments)
+                .HasForeignKey(c => c.PostID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Image -> Post
+            modelBuilder.Entity<Image>()
+                .HasOne(i => i.Post)
+                .WithMany()
+                .HasForeignKey(i => i.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
     [Index(nameof(Username), nameof(Useremail), IsUnique =true)]
     public class User
