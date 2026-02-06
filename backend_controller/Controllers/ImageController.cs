@@ -5,7 +5,7 @@ namespace vizsgaController.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImageController:ControllerBase
+    public class ImageController : ControllerBase
     {
         private readonly IImageModel _model;
         public ImageController(IImageModel model)
@@ -13,8 +13,9 @@ namespace vizsgaController.Controllers
             _model = model;
         }
 
-        [HttpPost("/Upload")]
-        public async Task<ActionResult> Upload([FromForm] int userId, [FromForm] IFormFile file)
+        [HttpPost("Upload")]
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult> Upload([FromQuery] int userId, IFormFile file)
         {
             try
             {
@@ -27,13 +28,12 @@ namespace vizsgaController.Controllers
             }
         }
 
-        [HttpGet("/Image/{id}")]
+        [HttpGet("Image/{id}")]
         public IActionResult GetImage(int id)
         {
             try
             {
                 var img = _model.GetImage(id);
-                ///return File(img.Content, img.ContentType);
                 return null;
             }
             catch (KeyNotFoundException)

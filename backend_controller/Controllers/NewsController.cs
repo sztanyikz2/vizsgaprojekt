@@ -16,7 +16,7 @@ namespace vizsgaController.Controllers
         {
             _model = model;
         }
-        [HttpGet("/search_user")]
+        [HttpGet("search_user")]
         public IActionResult GetUserNameBySearch([FromQuery] string name)
         {
             try
@@ -33,7 +33,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [HttpGet("/search_post")]
+        [HttpGet("search_post")]
         public IActionResult GetPostBySearch([FromQuery] string title)
         {
             try
@@ -52,7 +52,7 @@ namespace vizsgaController.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("/delete_users")]
+        [HttpDelete("delete_users")]
         public IActionResult DeleteUsers([FromQuery] int id)
         {
             try
@@ -71,7 +71,7 @@ namespace vizsgaController.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("/modify_user")]
+        [HttpPut("modify_user")]
         public IActionResult ModifyUser(ModifyUserDTO userDto)
         {
             try
@@ -88,7 +88,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [HttpDelete("/create_posts")]
+        [HttpPost("create_posts")]
         public IActionResult CreatePost([FromBody] PostDTO source)
         {
             try
@@ -107,7 +107,7 @@ namespace vizsgaController.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("/delete_posts")]
+        [HttpDelete("delete_posts")]
         public IActionResult DeletePosts([FromQuery] int id)
         {
             try
@@ -125,7 +125,7 @@ namespace vizsgaController.Controllers
             }
         }
         [Authorize(Roles = "User")]
-        [HttpDelete("/delete_own_post")]
+        [HttpDelete("delete_own_post")]
         public IActionResult DeleteOwnPost(DeleteOwnPostDTO deleteOwnpost)
         {
             try
@@ -143,13 +143,20 @@ namespace vizsgaController.Controllers
             }
         }
         [Authorize(Roles = "User")]
-        [HttpPost("/favourite_posts")]
-        public IActionResult FavouritePosts([FromQuery] int postID, [FromQuery] int userID)
+        [HttpPost("favourite_posts")]
+        public IActionResult FavouritePosts(FavouritePostDTO dto)
         {
             try
             {
-                _model.FavouritePost(postID, userID);
-                return Ok("Post added to Favourites");
+                _model.FavouritePost(dto);
+                if (dto.addTo)
+                {
+                    return Ok("Post added to Favourites");
+                }
+                else
+                {
+                    return Ok("Post removed from Favourites");
+                }
             }
             catch (InvalidOperationException ex)
             {
@@ -160,31 +167,14 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
+        
         [Authorize(Roles = "User")]
-        [HttpPost("/unfavourite_posts")]
-        public IActionResult UnfavouritePosts([FromQuery] int postID, [FromQuery] int userID)
+        [HttpPost("vote")]
+        public IActionResult Upvote(VoteDTO dto)
         {
             try
             {
-                _model.UnfavouritePost(postID, userID);
-                return Ok("Post removed from Favourites");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
-        [Authorize(Roles = "User")]
-        [HttpPost("/upvote")]
-        public IActionResult Upvote([FromQuery] int postID, [FromQuery] int userID)
-        {
-            try
-            {
-                _model.UpVoteOnPost(postID, userID);
+                _model.voteOnPost(dto);
                 return Ok("Upvoted");
             }
             catch (InvalidOperationException ex)
@@ -196,26 +186,9 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
+        
         [Authorize(Roles = "User")]
-        [HttpPost("/downvote")]
-        public IActionResult Downvote([FromQuery] int postID, [FromQuery] int userID)
-        {
-            try
-            {
-                _model.DownVoteOnPost(postID, userID);
-                return Ok("Downvoted");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest("Hiba történt");
-            }
-        }
-        [Authorize(Roles = "User")]
-        [HttpPost("/comment")]
+        [HttpPost("comment")]
         public IActionResult Comment([FromBody] CommentDTO source)
         {
             try
@@ -233,7 +206,7 @@ namespace vizsgaController.Controllers
             }
         }
         [Authorize(Roles = "Admin")]
-        [HttpDelete("/delete_comments")]
+        [HttpDelete("delete_comments")]
         public IActionResult DeleteSelectedComment([FromQuery] int id)
         {
             try
@@ -252,8 +225,8 @@ namespace vizsgaController.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("/create_category")]
-        public IActionResult CreateCat([FromBody] CategoryDTO source)
+        [HttpPost("create_category")]
+        public IActionResult CreateCat([FromBody] CategoryDTO source) //itt lehet [FromQuerry] kell?
         {
             try
             {
@@ -271,7 +244,7 @@ namespace vizsgaController.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("/delete_category")]
+        [HttpDelete("delete_category")]
         public IActionResult DeleteSelectedCategory([FromQuery] int id)
         {
             try
@@ -288,7 +261,7 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        [HttpDelete("/create_report")]
+        [HttpPost("create_report")]
         public IActionResult CreateRep([FromBody] ReportDTO source)
         {
             try

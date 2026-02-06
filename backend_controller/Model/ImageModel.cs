@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using vizsgaController.Persistence;
 
 namespace vizsgaController.Model
 {
-    public class ImageModel
+    public class ImageModel : IImageModel
     {
         private readonly NewsDbContext _context;
         public ImageModel(NewsDbContext context)

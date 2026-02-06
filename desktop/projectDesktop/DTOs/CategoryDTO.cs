@@ -1,4 +1,4 @@
-﻿namespace projectDesktop.Dtos
+﻿namespace projectDesktop.DTOs
 {
     public class CategoryDTO
     {
