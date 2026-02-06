@@ -13,49 +13,51 @@ namespace vizsgaController.Persistence
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }
         public NewsDbContext(DbContextOptions<NewsDbContext> options) : base(options) { }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure Post -> User relationship (author)
+            // Post.User + Post.UserID -> User's authored posts (not a collection on User yet)
             modelBuilder.Entity<Post>()
                 .HasOne(p => p.User)
                 .WithMany()
                 .HasForeignKey(p => p.UserID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Configure User -> Posts relationships (many-to-many)
+            // Post.Category + Post.CategoryID -> Category
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.CategoryID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User.Favourites - many-to-many
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Favourites)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("UserFavourites"));
 
+            // User.Upvoted_Posts - many-to-many
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Upvoted_Posts)
                 .WithMany()
-                .UsingEntity(j => j.ToTable("UserUpvotes"));
+                .UsingEntity(j => j.ToTable("UserUpvotedPosts"));
 
+            // User.Downvoted_Posts - many-to-many
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Downvoted_Posts)
                 .WithMany()
-                .UsingEntity(j => j.ToTable("UserDownvotes"));
+                .UsingEntity(j => j.ToTable("UserDownvotedPosts"));
 
-            // Configure Post -> Category relationship
-            modelBuilder.Entity<Post>()
-                .HasOne(p => p.Category)
-                .WithMany()
-                .HasForeignKey(p => p.CategoryID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Configure Comment -> Post relationship
+            // Comment -> Post
             modelBuilder.Entity<Comment>()
                 .HasOne<Post>()
                 .WithMany(p => p.Comments)
                 .HasForeignKey(c => c.PostID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configure Image -> Post relationship
+            // Image -> Post
             modelBuilder.Entity<Image>()
                 .HasOne(i => i.Post)
                 .WithMany()
