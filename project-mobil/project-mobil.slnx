@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="../project-mobil.Android/project-mobil.Android.csproj" />
-  <Project Path="../project-mobil.Desktop/project-mobil.Desktop.csproj" />
-  <Project Path="project-mobil.csproj" />
-</Solution>
