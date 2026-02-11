@@ -1,4 +1,4 @@
-﻿namespace projectDesktop.DTOs;
+﻿namespace MobileVersion.DTOs;
 
 public class FavouritePostDTO
 {

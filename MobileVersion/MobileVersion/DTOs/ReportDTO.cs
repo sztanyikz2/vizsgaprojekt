@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace projectDesktop.DTOs
+namespace MobileVersion.DTOs
 {
     public class ReportDTO
     {

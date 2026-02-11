@@ -1,15 +1,81 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:MobileVersion.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="MobileVersion.Views.MainView"
-             x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:MobileVersion.ViewModels"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="MobileVersion.Views.MainView"
+			 x:DataType="vm:MainViewModel">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainViewModel />
+	</Design.DataContext>
+	<Grid>
+
+		<!-- MAIN CONTENT -->
+		<Grid Name="MainContent">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<!-- TOP BAR -->
+			<Grid Grid.Row="0" Margin="10" ColumnDefinitions="Auto,*,Auto">
+				<!-- Side menu -->
+				<Button Content="☰" FontSize="24" Width="40" Height="40" Click="OpenMenu"/>
+
+				<!-- SEARCH -->
+				<StackPanel Grid.Column="1"	Orientation="Horizontal" HorizontalAlignment="Center">
+					<TextBlock Text="🔍" FontSize="18" Margin="0,0,5,0"/>
+					<TextBox Width="180" Watermark="Search"/>
+				</StackPanel>
+			</Grid>
+
+			<!-- SCROLLABLE CONTENT -->
+			<ScrollViewer Grid.Row="1">
+				<StackPanel Margin="15" Spacing="20">
+					<!-- POST 1 -->
+					<TextBlock Text="Example 1" FontWeight="Bold"/>
+
+					<!-- POST 2 -->
+					<Border Height="180" Background="#DDD" CornerRadius="10"/>
+					<TextBlock Text="Example 2" FontWeight="Bold"/>
+					<Border Height="180" Background="#DDD" CornerRadius="10"/>
+
+				</StackPanel>
+			</ScrollViewer>
+		</Grid>
+
+		<!-- SIDE MENU (OVERLAY) -->
+		<Border x:Name="SideMenu" Background="#222" Width="260" HorizontalAlignment="Left" IsVisible="False" ZIndex="10">
+			<StackPanel Margin="15"	Spacing="15">
+				<!-- CLOSE BUTTON -->
+				<Button Content="✖" HorizontalAlignment="Right" Click="CloseMenu"/>
+
+				<!-- MENU ITEMS -->
+				<Button Content="Sort by: 🔥 Top Posts ▼" Classes="MenuButton"/>
+				<Button Content="📁  Categories ▼" Width="150">
+					<Button.Flyout>
+						<MenuFlyout Items="{Binding Categories}">
+							<MenuFlyout.ItemTemplate>
+								<DataTemplate>
+									<MenuItem Command="{Binding DataContext.DisplayCategory, RelativeSource={RelativeSource AncestorType=Window}}"  CommandParameter="{Binding}" />
+								</DataTemplate>
+							</MenuFlyout.ItemTemplate>
+						</MenuFlyout>
+					</Button.Flyout>
+				</Button>
+
+				<!-- SLIDER -->
+				<TextBlock Text="☀ Dark / Light mode strength" Foreground="White" Margin="0,20,0,5"/>
+				<Slider Minimum="0" Maximum="100"/>
+
+				<!-- ABOUT -->
+				<Button Content="ℹ About Us" Margin="0,30,0,0" Classes="MenuButton"/>
+				<Button Content="⚙ Settings" Classes="MenuButton"/>
+			</StackPanel>
+		</Border>
+	</Grid>
 
 </UserControl>
