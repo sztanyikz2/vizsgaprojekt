@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using projectDesktop.DTOs;
+using MobileVersion.DTOs;
 
-namespace projectDesktop.Models;
+namespace MobileVersion.Models;
 
 public class consoleClientModel
 {
