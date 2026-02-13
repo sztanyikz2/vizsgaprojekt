@@ -34,46 +34,61 @@
 
 			<!-- SCROLLABLE CONTENT -->
 			<ScrollViewer Grid.Row="1">
-				<StackPanel Margin="15" Spacing="20">
-					<!-- POST 1 -->
-					<TextBlock Text="Example 1" FontWeight="Bold"/>
-
-					<!-- POST 2 -->
-					<Border Height="180" Background="#DDD" CornerRadius="10"/>
-					<TextBlock Text="Example 2" FontWeight="Bold"/>
-					<Border Height="180" Background="#DDD" CornerRadius="10"/>
-
-				</StackPanel>
+				<ItemsControl ItemsSource="{Binding FilteredPosts}" Margin="15">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border Margin="0,0,0,15" Padding="10" Background="#F0F0F0" CornerRadius="12">
+								<StackPanel Spacing="8">
+									<TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="16"/>
+									<Border Height="150" Background="#DDD" CornerRadius="10"/>
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
 			</ScrollViewer>
+
 		</Grid>
 
 		<!-- SIDE MENU (OVERLAY) -->
-		<Border x:Name="SideMenu" Background="#222" Width="260" HorizontalAlignment="Left" IsVisible="False" ZIndex="10">
+		<Border x:Name="SideMenu" Background="gray" Width="300" HorizontalAlignment="Left" IsVisible="False" ZIndex="10" ClipToBounds="true">
 			<StackPanel Margin="15"	Spacing="15">
 				<!-- CLOSE BUTTON -->
 				<Button Content="✖" HorizontalAlignment="Right" Click="CloseMenu"/>
 
 				<!-- MENU ITEMS -->
-				<Button Content="Sort by: 🔥 Top Posts ▼" Classes="MenuButton"/>
-				<Button Content="📁  Categories ▼" Width="150">
-					<Button.Flyout>
-						<MenuFlyout Items="{Binding Categories}">
-							<MenuFlyout.ItemTemplate>
-								<DataTemplate>
-									<MenuItem Command="{Binding DataContext.DisplayCategory, RelativeSource={RelativeSource AncestorType=Window}}"  CommandParameter="{Binding}" />
-								</DataTemplate>
-							</MenuFlyout.ItemTemplate>
-						</MenuFlyout>
-					</Button.Flyout>
-				</Button>
+				<Grid ColumnDefinitions="Auto,10,Auto" Margin="10">
+
+					<TextBlock Text="↕ Sort by:"
+							   VerticalAlignment="Center"
+							   Foreground="White"/>
+
+					<ComboBox Grid.Column="2"
+							  HorizontalAlignment="Stretch"
+							  ItemsSource="{Binding SortBy}"
+							  SelectedItem="{Binding }"/>
+				</Grid>
+				<Grid ColumnDefinitions="Auto,10,Auto" Margin="10">
+
+					<TextBlock Text="📁 Categories:"
+							   VerticalAlignment="Center"
+							   Foreground="White"/>
+
+					<ComboBox Grid.Column="2"
+							  HorizontalAlignment="Left"
+							  ItemsSource="{Binding Categories}"
+							  SelectedItem="{Binding SelectedCategory}"/>
+				</Grid>
+
+
 
 				<!-- SLIDER -->
 				<TextBlock Text="☀ Dark / Light mode strength" Foreground="White" Margin="0,20,0,5"/>
 				<Slider Minimum="0" Maximum="100"/>
 
 				<!-- ABOUT -->
-				<Button Content="ℹ About Us" Margin="0,30,0,0" Classes="MenuButton"/>
-				<Button Content="⚙ Settings" Classes="MenuButton"/>
+				<Button Content="ℹ About Us" Margin="0,30,0,0" Classes="MenuButton" Foreground="White"/>
+				<Button Content="⚙ Settings" Classes="MenuButton" Foreground="White"/>
 			</StackPanel>
 		</Border>
 	</Grid>
