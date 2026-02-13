@@ -48,32 +48,22 @@
 		</Grid>
 
 		<!-- SIDE MENU (OVERLAY) -->
-		<Border x:Name="SideMenu" Background="#222" Width="260" HorizontalAlignment="Left" IsVisible="False" ZIndex="10">
+		<Border x:Name="SideMenu" Background="gray" Width="260" HorizontalAlignment="Left" IsVisible="False" ZIndex="10">
 			<StackPanel Margin="15"	Spacing="15">
 				<!-- CLOSE BUTTON -->
 				<Button Content="✖" HorizontalAlignment="Right" Click="CloseMenu"/>
 
 				<!-- MENU ITEMS -->
-				<Button Content="Sort by: 🔥 Top Posts ▼" Classes="MenuButton"/>
-				<Button Content="📁  Categories ▼" Width="150">
-					<Button.Flyout>
-						<MenuFlyout Items="{Binding Categories}">
-							<MenuFlyout.ItemTemplate>
-								<DataTemplate>
-									<MenuItem Command="{Binding DataContext.DisplayCategory, RelativeSource={RelativeSource AncestorType=Window}}"  CommandParameter="{Binding}" />
-								</DataTemplate>
-							</MenuFlyout.ItemTemplate>
-						</MenuFlyout>
-					</Button.Flyout>
-				</Button>
+				<Label Content="Sort by:" Foreground="White"/>
+				<Label Content="📁  Categories: " Foreground="White"/>
 
 				<!-- SLIDER -->
 				<TextBlock Text="☀ Dark / Light mode strength" Foreground="White" Margin="0,20,0,5"/>
 				<Slider Minimum="0" Maximum="100"/>
 
 				<!-- ABOUT -->
-				<Button Content="ℹ About Us" Margin="0,30,0,0" Classes="MenuButton"/>
-				<Button Content="⚙ Settings" Classes="MenuButton"/>
+				<Button Content="ℹ About Us" Margin="0,30,0,0" Classes="MenuButton" Foreground="White"/>
+				<Button Content="⚙ Settings" Classes="MenuButton" Foreground="White"/>
 			</StackPanel>
 		</Border>
 	</Grid>
