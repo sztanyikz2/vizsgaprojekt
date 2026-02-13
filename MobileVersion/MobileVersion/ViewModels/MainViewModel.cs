@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using MobileVersion.DTOs;
 using MobileVersion.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -42,14 +43,7 @@ public partial class MainViewModel : ViewModelBase
         };
         sorting.ForEach(c => SortBy.Add(c));
     }
-    public ObservableCollection<Post> AllPosts { get; } =
-        new ObservableCollection<Post>
-        {
-            new Post("AI Breakthrough", "Books"),
-            new Post("Football Finals", "Gaming"),
-            new Post("Elections Update", "Health"),
-            new Post("New Smartphone", "Politics")
-        };
+    public ObservableCollection<Post> AllPosts { get; set;}
     private ObservableCollection<Post> _filteredposts;
     public ObservableCollection<Post> FilteredPosts
     {
@@ -79,18 +73,46 @@ public partial class MainViewModel : ViewModelBase
             }
         }
     }
+    private string _sort;
+    public string Sort
+    {
+        get => _sort;
+        set
+        {
+            if (_sort != value)
+            {
+                _sort = value;
+                OnPropertyChanged(nameof(Sort));
+                FilterPosts();
+            }
+        }
+    }
 
     private void FilterPosts()
     {
-        if (SelectedCategory == "All")
+        IEnumerable<Post> posts = AllPosts;
+
+        // Filter by category (error handling too)
+        if (!string.IsNullOrEmpty(SelectedCategory) && !SelectedCategory.Equals("All", StringComparison.OrdinalIgnoreCase))
         {
-            FilteredPosts = new ObservableCollection<Post>(AllPosts);
+            posts = posts.Where(p => p.Category.Equals(SelectedCategory, StringComparison.OrdinalIgnoreCase));
         }
-        else
+
+        // Sort
+        if (!string.IsNullOrEmpty(Sort) && !Sort.Equals("All", StringComparison.OrdinalIgnoreCase))
         {
-            FilteredPosts = new ObservableCollection<Post>(AllPosts.Where(p => p.Category == SelectedCategory));
+            posts = Sort switch
+            {
+                "Newest" => posts.OrderByDescending(p => p.DateCreated),
+                "Oldest" => posts.OrderBy(p => p.DateCreated),
+                "Most Liked" => posts.OrderByDescending(p => p.Likes),
+                "Most Disliked" => posts.OrderByDescending(p => p.Dislikes),
+                _ => posts
+            };
         }
+        FilteredPosts = new ObservableCollection<Post>(posts);
     }
+
 
 
 
@@ -101,18 +123,38 @@ public partial class MainViewModel : ViewModelBase
         Categories = new ObservableCollection<string>();
         SortBy = new ObservableCollection<string>();
         FilteredPosts = new ObservableCollection<Post>();
-        SelectedCategory = "All";
+        AllPosts = new ObservableCollection<Post>
+        {
+            new Post("AI Breakthrough", "Books", DateTime.Now.AddDays(-1), 12, 2),
+            new Post("Football Finals", "Gaming", DateTime.Now.AddDays(-3), 30, 5),
+            new Post("Elections Update", "Health", DateTime.Now.AddDays(-5), 20, 10),
+            new Post("New Smartphone", "Politics", DateTime.Now.AddDays(-2), 15, 1),
+            new Post("AI lamoi", "Books", DateTime.Now.AddDays(-6), 12, 2),
+            new Post("Football Finvfafvals", "Gaming", DateTime.Now.AddDays(-8), 30, 5),
+            new Post("Elections vevrfeefv", "Health", DateTime.Now.AddDays(-9), 20, 10),
+            new Post("New verfvverf", "Politics", DateTime.Now.AddDays(-11), 15, 1)
+        };
         LoadDefault();
+        FilterPosts();
+        SelectedCategory = "All";
+        Sort = "All";
     }
 }
 public class Post
 {
     public string Title { get; }
     public string Category { get; }
+    public DateTime DateCreated { get; }  // for Newest/Oldest
+    public int Likes { get; }             // for Most Liked
+    public int Dislikes { get; }          // for Most Disliked
 
-    public Post(string title, string category)
+    public Post(string title, string category, DateTime dateCreated, int likes, int dislikes)
     {
         Title = title;
         Category = category;
+        DateCreated = dateCreated;
+        Likes = likes;
+        Dislikes = dislikes;
     }
 }
+

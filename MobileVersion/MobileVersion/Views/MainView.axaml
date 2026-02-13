@@ -66,7 +66,7 @@
 					<ComboBox Grid.Column="2"
 							  HorizontalAlignment="Stretch"
 							  ItemsSource="{Binding SortBy}"
-							  SelectedItem="{Binding }"/>
+							  SelectedItem="{Binding Sort}"/>
 				</Grid>
 				<Grid ColumnDefinitions="Auto,10,Auto" Margin="10">
 
