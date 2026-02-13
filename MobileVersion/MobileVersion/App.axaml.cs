@@ -6,11 +6,14 @@ using System.Linq;
 using Avalonia.Markup.Xaml;
 using MobileVersion.ViewModels;
 using MobileVersion.Views;
+using System.Security.Cryptography.X509Certificates;
+using MobileVersion.Models;
 
 namespace MobileVersion;
 
 public partial class App : Application
 {
+    private consoleClientModel model;
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -18,6 +21,7 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -25,14 +29,14 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = new MainViewModel(model)
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = new MainViewModel(model)
             };
         }
 
