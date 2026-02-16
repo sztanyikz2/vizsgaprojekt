@@ -17,12 +17,11 @@ namespace vizsgaController.Model
             {
                 return _context.Users.Where(x => x.Username.ToLower() == name.ToLower()).Select(x => new UserDTO
                 {
+                    userID = x.UserID,
                     username = x.Username,
                     useremail = x.Useremail,
                     userpassword = x.Userpassword,
                 });
-
-
             }
             throw new InvalidDataException("Töltsd ki a keresőmezőt, pretty please");
         }
