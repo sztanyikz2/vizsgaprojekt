@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using vizsgaController.Persistence;
 
-namespace vizsgaController.Test2
+namespace ControllerTesting
 {
     public class DbContextFactory
     {
