@@ -23,7 +23,7 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-	<ItemGroup>
+    <ItemGroup>
 		<ProjectReference Include="..\backend_controller\vizsgaController.csproj" />
 	</ItemGroup>
 
