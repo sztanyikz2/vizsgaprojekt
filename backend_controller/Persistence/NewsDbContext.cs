@@ -13,16 +13,25 @@ namespace vizsgaController.Persistence
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }
         public NewsDbContext(DbContextOptions<NewsDbContext> options) : base(options) { }
+<<<<<<< Updated upstream
         
+=======
+
+>>>>>>> Stashed changes
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+<<<<<<< Updated upstream
             // Post.User + Post.UserID -> User's authored posts (not a collection on User yet)
+=======
+            // Configure Post -> User relationship (author)
+>>>>>>> Stashed changes
             modelBuilder.Entity<Post>()
                 .HasOne(p => p.User)
                 .WithMany()
                 .HasForeignKey(p => p.UserID)
+<<<<<<< Updated upstream
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Post.Category + Post.CategoryID -> Category
@@ -33,11 +42,17 @@ namespace vizsgaController.Persistence
                 .OnDelete(DeleteBehavior.Cascade);
 
             // User.Favourites - many-to-many
+=======
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure User -> Posts relationships (many-to-many)
+>>>>>>> Stashed changes
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Favourites)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("UserFavourites"));
 
+<<<<<<< Updated upstream
             // User.Upvoted_Posts - many-to-many
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Upvoted_Posts)
@@ -51,13 +66,37 @@ namespace vizsgaController.Persistence
                 .UsingEntity(j => j.ToTable("UserDownvotedPosts"));
 
             // Comment -> Post
+=======
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Upvoted_Posts)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserUpvotes"));
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Downvoted_Posts)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserDownvotes"));
+
+            // Configure Post -> Category relationship
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.CategoryID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure Comment -> Post relationship
+>>>>>>> Stashed changes
             modelBuilder.Entity<Comment>()
                 .HasOne<Post>()
                 .WithMany(p => p.Comments)
                 .HasForeignKey(c => c.PostID)
                 .OnDelete(DeleteBehavior.Cascade);
 
+<<<<<<< Updated upstream
             // Image -> Post
+=======
+            // Configure Image -> Post relationship
+>>>>>>> Stashed changes
             modelBuilder.Entity<Image>()
                 .HasOne(i => i.Post)
                 .WithMany()
