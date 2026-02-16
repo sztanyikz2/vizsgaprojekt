@@ -17,7 +17,7 @@ namespace vizsgaController.Controllers
             _model = model;
         }
         [HttpGet("search_user")]
-        public IActionResult GetUserNameBySearch([FromQuery] string name)
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUserNameBySearch([FromQuery] string name)
         {
             try
             {
