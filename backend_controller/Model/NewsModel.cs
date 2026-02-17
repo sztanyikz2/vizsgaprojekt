@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore;
 using vizsgaController.Dtos;
 using vizsgaController.Persistence;
 
@@ -13,35 +14,48 @@ namespace vizsgaController.Model
         }
         public IEnumerable<UserDTO> GetUserNamesBySearch(string name)
         {
-            if (name != null)
+            if (name == null)
             {
-                return _context.Users
-                    .Where(x => x.Username.ToLower().Contains(name.ToLower()))
-                    .Select(x => new UserDTO
-                    {
-                        userID = x.UserID,
-                        username = x.Username,
-                        useremail = x.Useremail,
-                        userpassword = x.Userpassword,
-                    });
+                throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
             }
-            throw new InvalidDataException("Töltsd ki a keresőmezőt, pretty please");
+            if (!_context.Users.Any(x => x.Username.ToLower().Contains(name.ToLower())))
+            {
+                throw new InvalidDataException("Nincs ilyen nevű user");
+            }
+            return _context.Users.Where(x => x.Username.ToLower() == name.ToLower()).Select(x => new UserDTO
+            {
+                userID = x.UserID,
+                username = x.Username,
+                useremail = x.Useremail,
+                userpassword = x.Userpassword
+            });
+
         }
         public IEnumerable<PostDTO> GetPostsBySearch(string title)
         {
-            if (title != null)
+            if (title == null)
             {
-                return _context.Posts.Where(x => x.Title.ToLower().Contains(title.ToLower())).Select(x => new PostDTO
-                {
-                    title = x.Title,
-                    content = x.Content,
-                    created_at = x.Created_at
-                });
+                throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
             }
-            throw new InvalidDataException("Töltsd ki a keresőmezőt, pretty please");
+            if (!_context.Posts.Any(x => x.Title.ToLower().Contains(title.ToLower())))
+            {
+                throw new InvalidDataException("Nincs ilyen post");
+            }
+            return _context.Posts.Where(x => x.Title.ToLower().Contains(title.ToLower())).Select(x => new PostDTO
+            {
+                title = x.Title,
+                content = x.Content,
+                created_at = x.Created_at
+            });
         }
-        public void DeleteUsers(int id)
+        public async Task DeleteUsers(int id)
         {
+            if (id <= 0)
+                throw new ArgumentOutOfRangeException(nameof(id), "Az id csak pozitív egész lehet.");
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserID == id);
+            if (user is null)
+                throw new KeyNotFoundException($"Nincs ember a megadott azonosítóval: {id}.");
+
             using var trx = _context.Database.BeginTransaction();
             {
                 _context.Users.Remove(_context.Users.Where(x => x.UserID == id).FirstOrDefault());
