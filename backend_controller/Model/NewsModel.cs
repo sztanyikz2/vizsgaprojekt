@@ -63,21 +63,25 @@ namespace vizsgaController.Model
                 trx.Commit();
             }
         }
-        public void ModifyUsers(ModifyUserDTO dto)
+        public async Task ModifyUsers(ModifyUserDTO dto)
         {
+            if (dto is null) throw new ArgumentNullException("DTO nonexistant",nameof(dto));
+
+            if (dto.id <= 0) throw new ArgumentOutOfRangeException("ID can't be negative",nameof(dto.id));
+
+            var user = _context.Users.Where(x => x.UserID == dto.id).FirstOrDefault();
+            if (user == null) throw new KeyNotFoundException("User not found");
+
+            if (string.IsNullOrWhiteSpace(dto.name)) throw new ArgumentException("A username nem lehet üres.");
+
+            var userexists = await _context.Users.AnyAsync(x => x.Username == dto.name);
+            if (userexists) throw new InvalidOperationException($"Már létezik ilyen username: '{dto.name}'.");
+          
             using var trx = _context.Database.BeginTransaction();
             {
-                var user = _context.Users.Where(x => x.UserID == dto.id).FirstOrDefault();
-                if (user != null)
-                {
-                    user.Username = dto.name;
-                    _context.SaveChanges();
-                    trx.Commit();
-                }
-                else
-                {
-                    throw new InvalidDataException("User not found");
-                }
+                user.Username = dto.name;
+                _context.SaveChanges();
+                trx.Commit();
             }
         }
         public void CreatePost(PostDTO source)
@@ -86,7 +90,6 @@ namespace vizsgaController.Model
             {
                 _context.Posts.Add(new Post
                 {
-                    PostID = source.postID,
                     UserID = source.userID,
                     CategoryID = source.categoryID,
                     Title = source.title,
