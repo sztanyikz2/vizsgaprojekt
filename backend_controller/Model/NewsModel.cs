@@ -15,13 +15,15 @@ namespace vizsgaController.Model
         {
             if (name != null)
             {
-                return _context.Users.Where(x => x.Username.ToLower() == name.ToLower()).Select(x => new UserDTO
-                {
-                    userID = x.UserID,
-                    username = x.Username,
-                    useremail = x.Useremail,
-                    userpassword = x.Userpassword,
-                });
+                return _context.Users
+                    .Where(x => x.Username.ToLower().Contains(name.ToLower()))
+                    .Select(x => new UserDTO
+                    {
+                        userID = x.UserID,
+                        username = x.Username,
+                        useremail = x.Useremail,
+                        userpassword = x.Userpassword,
+                    });
             }
             throw new InvalidDataException("Töltsd ki a keresőmezőt, pretty please");
         }
@@ -95,7 +97,7 @@ namespace vizsgaController.Model
             using var trx = _context.Database.BeginTransaction();
             {
                 _context.Posts.Remove(_context.Posts.Where(x => x.PostID == dto.id && x.UserID == dto.userId).FirstOrDefault()); ///usert valahogyan használni kellene, összekötni
-                _context.Comments.Remove(_context.Comments.Where(x => x.PostID == dto.id).FirstOrDefault());
+                DeleteComments(dto.id);
                 _context.SaveChanges();
                 trx.Commit();
             }
@@ -160,7 +162,7 @@ namespace vizsgaController.Model
 
         public void removeVote(removeVoteDTO dto)
         {
-            var  post = _context.Posts.Where(x => x.PostID == dto.postId).FirstOrDefault();
+            var post = _context.Posts.Where(x => x.PostID == dto.postId).FirstOrDefault();
             var user = _context.Users.Where(x => x.UserID == dto.userId).FirstOrDefault();
             if (post != null && user != null)
             {
@@ -193,7 +195,7 @@ namespace vizsgaController.Model
             using var trx = _context.Database.BeginTransaction();
             {
                 var post = _context.Posts.Where(x => x.PostID == source.postID).FirstOrDefault();
-                if (post == null) 
+                if (post == null)
                 {
                     throw new InvalidDataException("Post not found");
                 }
