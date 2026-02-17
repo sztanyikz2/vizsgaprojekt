@@ -1,3 +1,4 @@
+
 using vizsgaController.Model;
 using vizsgaController.Persistence;
 
@@ -17,18 +18,78 @@ namespace ControllerTesting
         [Fact]
         public void NameSearch_Valid()
         {
-            var name = _context.Users
-                .Where(r => r.Userpassword == "admin123")
-                .Select(r => r.Username)
+            var result = _model.GetUserNamesBySearch("admin").ToList();
+            Assert.NotEmpty(result);
+            Assert.All(result, x => Assert.Contains("admin", x.username));
+        }
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void NameSearch_EmptyParam(string? name)
+        {
+            var ex = Assert.Throws<ArgumentException>(() => _model.GetUserNamesBySearch(name!).ToList());
+            Assert.Contains("pretty", ex.Message);
+        }
+        [Fact]
+        public void NameSearch_NoMatch()
+        {
+            var ex = Assert.Throws<KeyNotFoundException>(() => _model.GetUserNamesBySearch("NINCSILYEN").ToList());
+            Assert.Contains("nincs ilyen", ex.Message);
+        }
+        ///////////////////////////////////////
+        [Fact]
+        public void PostSearch_Valid()
+        {
+            var result = _model.GetPostsBySearch("future").ToList();
+            Assert.NotEmpty(result);
+            Assert.All(result, x => Assert.Contains("future", x.title));
+        }
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void PostSearch_EmptyParam(string? title)
+        {
+            var ex = Assert.Throws<ArgumentException>(() => _model.GetPostsBySearch(title!).ToList());
+            Assert.Contains("pretty", ex.Message);
+        }
+        [Fact]
+        public void PostSearch_NoMatch()
+        {
+            var ex = Assert.Throws<KeyNotFoundException>(() => _model.GetPostsBySearch("NINCSILYEN").ToList());
+            Assert.Contains("nincs ilyen", ex.Message);
+        }
+        ///////////////////////////////////////
+        [Fact]
+        public async Task DeleteUser_Valid()
+        {
+            var id = _context.Users
+                .Where(r => r.Username == "john_doe")
+                .Select(r => r.UserID)
                 .First();
 
-            var dto = _model.GetUserNamesBySearch(name);
+            var before = _context.Users.Count();
 
-            Assert.Equal(name, dto.);
-            Assert.Equal("Chernobyl 1986", dto.RoomName);
-            Assert.True(dto.Price > 0);
-            Assert.False(string.IsNullOrWhiteSpace(dto.CategoryName));
-            Assert.False(string.IsNullOrWhiteSpace(dto.LocationName));
+            await _model.DeleteUsers(id);
+
+            var after = _context.Users.Count();
+            Assert.Equal(before - 1, after);
+            Assert.False(_context.Users.Any(r => r.UserID == id));
         }
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public async Task DeleteUsers_IDOutOfRange(int id)
+        {
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.DeleteUsers(id));
+        }
+        [Fact]
+        public async Task DeleteUsers_IDNotFound()
+        {
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.DeleteUsers(999999));
+        }
+        //////////////////////////////////////////
+
     }
 }
