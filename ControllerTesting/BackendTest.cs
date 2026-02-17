@@ -1,4 +1,5 @@
 
+using vizsgaController.Dtos;
 using vizsgaController.Model;
 using vizsgaController.Persistence;
 
@@ -38,6 +39,7 @@ namespace ControllerTesting
             Assert.Contains("nincs ilyen", ex.Message);
         }
         ///////////////////////////////////////
+        
         [Fact]
         public void PostSearch_Valid()
         {
@@ -61,6 +63,7 @@ namespace ControllerTesting
             Assert.Contains("nincs ilyen", ex.Message);
         }
         ///////////////////////////////////////
+        
         [Fact]
         public async Task DeleteUser_Valid()
         {
@@ -90,6 +93,73 @@ namespace ControllerTesting
             await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.DeleteUsers(999999));
         }
         //////////////////////////////////////////
+        
+        [Fact]
+        public async Task ModifyUser_Valid()
+        {
+            var id = _context.Users
+                .Where(r => r.Username == "admin")
+                .Select(r => r.UserID)
+                .First();
+
+            var dto = new ModifyUserDTO
+            {
+                id = id,
+                name = "adminreal"
+            };
+
+            await _model.ModifyUsers(dto);
+
+            var updated = _context.Users.First(r => r.UserID == id);
+            Assert.Equal(dto.name, updated.Username);
+        }
+
+        [Fact]
+        public async Task ModifyRoom_NullDTO()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _model.ModifyUsers(null!));
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public async Task ModifyRoom_IDOutOfRange(int id)
+        {
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.DeleteUsers(id));
+        }
+        [Fact]
+        public async Task ModifyRoom_IDNotFound()
+        {
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.DeleteUsers(999999));
+        }
+        [Fact]
+        public async Task ModifyRoom_EmptyName()
+        {
+            var id = _context.Users.Select(r => r.UserID).First();
+
+            var dto = new ModifyUserDTO
+            {
+                id = id,
+                name = "   "
+            };
+
+            await Assert.ThrowsAsync<ArgumentException>(() => _model.ModifyUsers(dto));
+        }
+
+        [Fact]
+        public async Task ModifyRoom_UsernameExists()
+        {
+            var id = _context.Users.Select(r => r.UserID).First();
+
+            var dto = new ModifyUserDTO
+            {
+                id = id,
+                name = "jane_smith"
+            };
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _model.ModifyUsers(dto));
+        }
+        ///////////////////////////////////////////
 
     }
 }
