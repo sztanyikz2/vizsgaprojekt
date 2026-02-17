@@ -34,7 +34,7 @@ namespace vizsgaController.Controllers
             }
         }
         [HttpGet("search_post")]
-        public IActionResult GetPostBySearch([FromQuery] string title)
+        public ActionResult GetPostBySearch([FromQuery] string title)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_users")]
-        public IActionResult DeleteUsers([FromQuery] int id)
+        public ActionResult DeleteUsers([FromQuery] int id)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("modify_user")]
-        public IActionResult ModifyUser(ModifyUserDTO userDto)
+        public ActionResult ModifyUser(ModifyUserDTO userDto)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace vizsgaController.Controllers
             }
         }
         [HttpPost("create_posts")]
-        public IActionResult CreatePost([FromBody] PostDTO source)
+        public ActionResult CreatePost([FromBody] PostDTO source)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_posts")]
-        public IActionResult DeletePosts([FromQuery] int id)
+        public ActionResult DeletePosts([FromQuery] int id)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpDelete("delete_own_post")]
-        public IActionResult DeleteOwnPost(DeleteOwnPostDTO deleteOwnpost)
+        public ActionResult DeleteOwnPost(DeleteOwnPostDTO deleteOwnpost)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpPost("favourite_posts")]
-        public IActionResult FavouritePosts(FavouritePostDTO dto)
+        public ActionResult FavouritePosts(FavouritePostDTO dto)
         {
             try
             {
@@ -170,7 +170,7 @@ namespace vizsgaController.Controllers
         
         [Authorize(Roles = "User")]
         [HttpPost("vote")]
-        public IActionResult Upvote(VoteDTO dto)
+        public ActionResult Upvote(VoteDTO dto)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace vizsgaController.Controllers
         
         [Authorize(Roles = "User")]
         [HttpPost("comment")]
-        public IActionResult Comment([FromBody] CommentDTO source)
+        public ActionResult Comment([FromBody] CommentDTO source)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_comments")]
-        public IActionResult DeleteSelectedComment([FromQuery] int id)
+        public ActionResult DeleteSelectedComment([FromQuery] int id)
         {
             try
             {
@@ -226,7 +226,7 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("create_category")]
-        public IActionResult CreateCat([FromBody] CategoryDTO source) //itt lehet [FromQuerry] kell?
+        public ActionResult CreateCat([FromBody] CategoryDTO source) //itt lehet [FromQuerry] kell?
         {
             try
             {
@@ -245,7 +245,7 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_category")]
-        public IActionResult DeleteSelectedCategory([FromQuery] int id)
+        public ActionResult DeleteSelectedCategory([FromQuery] int id)
         {
             try
             {
@@ -262,7 +262,7 @@ namespace vizsgaController.Controllers
             }
         }
         [HttpPost("create_report")]
-        public IActionResult CreateRep([FromBody] ReportDTO source)
+        public ActionResult CreateRep([FromBody] ReportDTO source)
         {
             try
             {
