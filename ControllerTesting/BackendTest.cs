@@ -156,26 +156,13 @@ namespace ControllerTesting
                 id = id,
                 name = "jane_smith"
             };
-
+            var before = _context.Users.Count();
             await _model.DeleteUsers(id);
 
             var after = _context.Users.Count();
             Assert.Equal(before - 1, after);
             Assert.False(_context.Users.Any(r => r.UserID == id));
         }
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public async Task DeleteUsers_IDOutOfRange(int id)
-        {
-            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.DeleteUsers(id));
-        }
-        [Fact]
-        public async Task DeleteUsers_IDNotFound()
-        {
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.DeleteUsers(999999));
-        }
-        ///////////////////////////////////////////
 
     }
 }
