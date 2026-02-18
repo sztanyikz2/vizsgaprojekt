@@ -114,7 +114,7 @@ namespace vizsgaController.Model
             using var trx = _context.Database.BeginTransaction();
             {
                 _context.Posts.Remove(_context.Posts.Where(x => x.PostID == dto.id && x.UserID == dto.userId).FirstOrDefault()); ///usert valahogyan használni kellene, összekötni
-                _context.Comments.Remove(_context.Comments.Where(x => x.PostID == dto.id).FirstOrDefault());
+                DeleteComments(dto.id);
                 _context.SaveChanges();
                 trx.Commit();
             }
