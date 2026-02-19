@@ -8,8 +8,8 @@ namespace vizsgaController.Model
         public IEnumerable<UserDTO> GetUserNamesBySearch(string name);
         public IEnumerable<PostDTO> GetPostsBySearch(string title);
         //users
-        public void DeleteUsers(int id);
-        public void ModifyUsers(ModifyUserDTO  source);
+        public Task DeleteUsers(int id);
+        public Task ModifyUsers(ModifyUserDTO  source);
         //posts
         public void CreatePost(PostDTO source);
         public void DeletePost(int id);

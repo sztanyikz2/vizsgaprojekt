@@ -65,18 +65,18 @@ namespace vizsgaController.Model
         }
         public async Task ModifyUsers(ModifyUserDTO dto)
         {
-            if (dto is null) throw new ArgumentNullException("DTO nonexistant",nameof(dto));
+            if (dto is null) throw new ArgumentNullException("DTO nonexistant", nameof(dto));
 
-            if (dto.id <= 0) throw new ArgumentOutOfRangeException("ID can't be negative",nameof(dto.id));
+            if (dto.id <= 0) throw new ArgumentOutOfRangeException("ID can't be 0 or negative", nameof(dto.id));
 
             var user = _context.Users.Where(x => x.UserID == dto.id).FirstOrDefault();
             if (user == null) throw new KeyNotFoundException("User not found");
 
-            if (string.IsNullOrWhiteSpace(dto.name)) throw new ArgumentException("A username nem lehet üres.");
+            if (string.IsNullOrWhiteSpace(dto.name)) throw new ArgumentException("Username can't be empty");
 
             var userexists = await _context.Users.AnyAsync(x => x.Username == dto.name);
-            if (userexists) throw new InvalidOperationException($"Már létezik ilyen username: '{dto.name}'.");
-          
+            if (userexists) throw new InvalidOperationException($"Username exists: '{dto.name}'");
+
             using var trx = _context.Database.BeginTransaction();
             {
                 user.Username = dto.name;
@@ -84,8 +84,20 @@ namespace vizsgaController.Model
                 trx.Commit();
             }
         }
-        public void CreatePost(PostDTO source)
+        public async Task CreatePost(PostDTO source)
         {
+            if (source is null) throw new ArgumentNullException("DTO nonexistant", nameof(source));
+
+            if (source.userID <= 0 || source.categoryID <= 0) throw new ArgumentOutOfRangeException("ID can't be 0 or negative");
+
+            var user = _context.Users.Where(x => x.UserID == source.userID).FirstOrDefault();
+            if (user == null) throw new KeyNotFoundException("User not found");
+            var cat = _context.Categories.Where(x => x.CategoryID == source.categoryID).FirstOrDefault();
+            if (cat == null) throw new KeyNotFoundException("Category not found");
+
+            if (string.IsNullOrWhiteSpace(source.title)) throw new ArgumentException("Title can't be empty");
+            if (string.IsNullOrWhiteSpace(source.content)) throw new ArgumentException("Content can't be empty");
+
             using var trx = _context.Database.BeginTransaction();
             {
                 _context.Posts.Add(new Post
@@ -102,48 +114,61 @@ namespace vizsgaController.Model
         }
         public void DeletePost(int id)
         {
+            var post = _context.Posts.Where(x => x.PostID == id).First();
+            if (post == null) throw new KeyNotFoundException("Post not found");
+
+            int before = _context.Posts.Count();
             using var trx = _context.Database.BeginTransaction();
             {
-                _context.Remove(_context.Posts.Where(x => x.PostID == id).First());
+                _context.Remove(post);
                 _context.SaveChanges();
                 trx.Commit();
             }
+            int after = _context.Posts.Count();
+            if (before - after != 1) throw new InvalidDataException("Post wasn't removed");
         }
         public void DeleteOwnPost(DeleteOwnPostDTO dto)
         {
+            var user = _context.Users.Where(x => x.UserID == dto.userId).FirstOrDefault();
+            if (user == null) throw new KeyNotFoundException("User not found");
+            var post = _context.Posts.Where(x => x.PostID == dto.postid).First();
+            if (post == null) throw new KeyNotFoundException("Post not found");
+
+            var delpost = _context.Posts.Where(x => x.PostID == dto.postid && x.UserID == dto.userId).FirstOrDefault();
+
+            int before = _context.Posts.Count();
             using var trx = _context.Database.BeginTransaction();
             {
-                _context.Posts.Remove(_context.Posts.Where(x => x.PostID == dto.id && x.UserID == dto.userId).FirstOrDefault()); ///usert valahogyan használni kellene, összekötni
-                DeleteComments(dto.id);
+                _context.Posts.Remove(delpost);
+                DeleteComments(dto.postid);
                 _context.SaveChanges();
                 trx.Commit();
             }
+            int after = _context.Posts.Count();
+            if (before - after != 1) throw new InvalidDataException("Post wasn't removed");
         }
 
         public void FavouritePost(FavouritePostDTO favpost)
         {
+            var user = _context.Users.Where(x => x.UserID == favpost.userId).FirstOrDefault();
+            if (user == null) throw new KeyNotFoundException("User not found");
+            var post = _context.Posts.Where(x => x.PostID == favpost.postId).First();
+            if (post == null) throw new KeyNotFoundException("Post not found");
+
             using var trx = _context.Database.BeginTransaction();
             {
-                var post = _context.Posts.Where(x => x.PostID == favpost.postId).FirstOrDefault();
-                var user = _context.Users.Where(x => x.UserID == favpost.userId).FirstOrDefault();
-                if (post != null && user != null)
-                {
 
-                    if (favpost.addTo)
-                    {
-                        user.Favourites.Add(post);
-                    }
-                    else
-                    {
-                        user.Favourites.Remove(post);
-                    }
-                    _context.SaveChanges();
-                    trx.Commit();
+                if (favpost.addTo)
+                {
+                    user.Favourites.Add(post);
                 }
                 else
                 {
-                    throw new InvalidDataException("Post or User not found");
+                    user.Favourites.Remove(post);
                 }
+                _context.SaveChanges();
+                trx.Commit();
+
             }
 
         }
