@@ -78,6 +78,8 @@ namespace vizsgaController.Persistence
     }
     public class Image
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ImageId { get; set; }
 
         public byte[] ImageContent { get; set; }

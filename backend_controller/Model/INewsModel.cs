@@ -11,19 +11,19 @@ namespace vizsgaController.Model
         public Task DeleteUsers(int id);
         public Task ModifyUsers(ModifyUserDTO  source);
         //posts
-        public void CreatePost(PostDTO source);
-        public void DeletePost(int id);
-        public void DeleteOwnPost(DeleteOwnPostDTO source);
-        public void FavouritePost(FavouritePostDTO source);
-        public void voteOnPost(VoteDTO source);
+        public Task CreatePost(PostDTO source);
+        public Task DeletePost(int id);
+        public Task DeleteOwnPost(DeleteOwnPostDTO source);
+        public Task FavouritePost(FavouritePostDTO source);
+        public Task voteOnPost(VoteDTO source);
         //coment
-        public void CommentOnPost(CommentDTO source);
-        public void DeleteComments(int id);
+        public Task CommentOnPost(CommentDTO source);
+        public Task DeleteComments(int id);
         //categories
-        public void CreateCategory(CategoryDTO source);
-        public void DeleteCategory(int id);
+        public Task CreateCategory(CategoryDTO source);
+        public Task DeleteCategory(int id);
         //reports
-        public void CreateReport(ReportDTO source);
+        public Task CreateReport(ReportDTO source);
         //smth
         public void ManageSiteSettings();
         

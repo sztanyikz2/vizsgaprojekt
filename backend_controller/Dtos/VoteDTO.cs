@@ -2,7 +2,7 @@
 
 public class VoteDTO
 {
-    public bool isPositive { get; set; }
     public int userId { get; set; }
     public int postId { get; set; }
+    public bool isUpvote { get; set; }
 }
