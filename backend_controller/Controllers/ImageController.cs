@@ -7,10 +7,10 @@ namespace vizsgaController.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-        private readonly IImageModel _model;
+        private readonly IImageModel await _model;
         public ImageController(IImageModel model)
         {
-            _model = model;
+            await _model = model;
         }
 
         [HttpPost("Upload")]
@@ -19,7 +19,7 @@ namespace vizsgaController.Controllers
         {
             try
             {
-                int id = await _model.SaveImageAsync(userId, file);
+                int id = await await _model.SaveImageAsync(userId, file);
                 return Ok(new { imageId = id });
             }
             catch
@@ -33,7 +33,7 @@ namespace vizsgaController.Controllers
         {
             try
             {
-                var img = _model.GetImage(id);
+                var img = await _model.GetImage(id);
                 return null;
             }
             catch (KeyNotFoundException)

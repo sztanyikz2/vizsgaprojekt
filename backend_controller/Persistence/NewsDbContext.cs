@@ -40,8 +40,6 @@ namespace vizsgaController.Persistence
         [Required]
         public string Content { get; set; }
         public DateTime Created_at { get; set; }
-        //public int Upvotes { get; set; }
-        //public int Downvotes { get; set; }
         public int Votes { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public Category Category { get; set; }
@@ -80,6 +78,8 @@ namespace vizsgaController.Persistence
     }
     public class Image
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ImageId { get; set; }
 
         public byte[] ImageContent { get; set; }

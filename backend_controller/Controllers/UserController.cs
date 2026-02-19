@@ -13,17 +13,17 @@ namespace vizsgaController.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserModel _model;
+        private readonly IUserModel await _model;
         public UserController(IUserModel model)
         {
-            _model = model;
+            await _model = model;
         }
         [HttpPost("registration")]
         public ActionResult Registration(string username, string password)
         {
             try
             {
-                _model.Registration(username, password);
+                await _model.Registration(username, password);
                 return Ok();
             }
             catch (InvalidOperationException ex)
@@ -41,7 +41,7 @@ namespace vizsgaController.Controllers
         {
             try
             {
-                var user = _model.ValidateUser(username, password);
+                var user = await _model.ValidateUser(username, password);
                 if (user == null)
                 {
                     return Unauthorized("Invalid username or password");
@@ -75,7 +75,7 @@ namespace vizsgaController.Controllers
         {
             try
             {
-                _model.RoleModify(userid);
+                await _model.RoleModify(userid);
                 return Ok();
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace vizsgaController.Controllers
         {
             try
             {
-                _model.ModifyPassword(username, password);
+                await _model.ModifyPassword(username, password);
                 return Ok();
             }
             catch (Exception ex)

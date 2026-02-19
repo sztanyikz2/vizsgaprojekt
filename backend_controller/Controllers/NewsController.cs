@@ -28,13 +28,17 @@ namespace vizsgaController.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception e)
             {
                 return BadRequest("Hiba történt");
             }
         }
         [HttpGet("search_post")]
-        public ActionResult GetPostBySearch([FromQuery] string title)
+        public async Task<ActionResult> GetPostBySearch([FromQuery] string title)
         {
             try
             {
@@ -42,6 +46,10 @@ namespace vizsgaController.Controllers
                 return Ok(posts);
             }
             catch (InvalidDataException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -53,14 +61,22 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_users")]
-        public ActionResult DeleteUsers([FromQuery] int id)
+        public async Task<ActionResult> DeleteUsers([FromQuery] int id)
         {
             try
             {
-                _model.DeleteUsers(id);
+                await _model.DeleteUsers(id);
                 return Ok("User managed successfully");
             }
-            catch (InvalidDataException ex)
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -72,14 +88,30 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("modify_user")]
-        public ActionResult ModifyUser(ModifyUserDTO userDto)
+        public async Task<ActionResult> ModifyUser(ModifyUserDTO userDto)
         {
             try
             {
-                _model.ModifyUsers(userDto);
+                await _model.ModifyUsers(userDto);
                 return Ok("User modified successfully");
             }
-            catch (InvalidDataException ex)
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -89,14 +121,30 @@ namespace vizsgaController.Controllers
             }
         }
         [HttpPost("create_posts")]
-        public ActionResult CreatePost([FromBody] PostDTO source)
+        public async Task<ActionResult> CreatePost([FromBody] PostDTO source)
         {
             try
             {
-                _model.CreatePost(source);
+                await _model.CreatePost(source);
                 return Ok("Post created successfully");
             }
-            catch (InvalidDataException ex)
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -108,14 +156,18 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_posts")]
-        public ActionResult DeletePosts([FromQuery] int id)
+        public async Task<ActionResult> DeletePosts([FromQuery] int id)
         {
             try
             {
-                _model.DeletePost(id);
+                await _model.DeletePost(id);
                 return Ok("Post deleted successfully");
             }
-            catch (InvalidDataException ex)
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -126,14 +178,18 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpDelete("delete_own_post")]
-        public ActionResult DeleteOwnPost(DeleteOwnPostDTO deleteOwnpost)
+        public async Task<ActionResult> DeleteOwnPost([FromBody] DeleteOwnPostDTO deleteOwnpost)
         {
             try
             {
-                _model.DeleteOwnPost(deleteOwnpost);
+                await _model.DeleteOwnPost(deleteOwnpost);
                 return Ok("Your post has been deleted");
             }
-            catch (InvalidDataException ex)
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -144,38 +200,35 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "User")]
         [HttpPost("favourite_posts")]
-        public ActionResult FavouritePosts(FavouritePostDTO dto)
+        public async Task<ActionResult> FavouritePosts([FromBody] FavouritePostDTO dto)
         {
             try
             {
-                _model.FavouritePost(dto);
-                if (dto.addTo)
-                {
-                    return Ok("Post added to Favourites");
-                }
-                else
-                {
-                    return Ok("Post removed from Favourites");
-                }
+                await _model.FavouritePost(dto);
+                return Ok("Post favourited/unfavourited successfully");
             }
-            catch (InvalidOperationException ex)
+            catch (KeyNotFoundException ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (Exception e)
             {
                 return BadRequest("Hiba történt");
             }
         }
-        
+
         [Authorize(Roles = "User")]
         [HttpPost("vote")]
-        public ActionResult Upvote(VoteDTO dto)
+        public async Task<ActionResult> Vote([FromBody] VoteDTO dto)
         {
             try
             {
-                _model.voteOnPost(dto);
-                return Ok("Upvoted");
+                await _model.voteOnPost(dto);
+                return Ok("Voted/Unvoted");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (InvalidOperationException ex)
             {
@@ -186,15 +239,23 @@ namespace vizsgaController.Controllers
                 return BadRequest("Hiba történt");
             }
         }
-        
+
         [Authorize(Roles = "User")]
         [HttpPost("comment")]
-        public ActionResult Comment([FromBody] CommentDTO source)
+        public async Task<ActionResult> Comment([FromBody] CommentDTO source)
         {
             try
             {
-                _model.CommentOnPost(source);
+                await _model.CommentOnPost(source);
                 return Ok("Comment posted");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (InvalidOperationException ex)
             {
@@ -207,14 +268,18 @@ namespace vizsgaController.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_comments")]
-        public ActionResult DeleteSelectedComment([FromQuery] int id)
+        public async Task<ActionResult> DeleteSelectedComment([FromQuery] int id)
         {
             try
             {
-                _model.DeleteComments(id);
+                await _model.DeleteComments(id);
                 return Ok("Comment deleted successfully");
             }
-            catch (InvalidDataException ex)
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -226,14 +291,22 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("create_category")]
-        public ActionResult CreateCat([FromBody] CategoryDTO source) //itt lehet [FromQuerry] kell?
+        public async Task<ActionResult> CreateCat([FromBody] CategoryDTO source)
         {
             try
             {
-                _model.CreateCategory(source);
+                await _model.CreateCategory(source);
                 return Ok("Category created successfully");
             }
-            catch (InvalidDataException ex)
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -245,14 +318,18 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete_category")]
-        public ActionResult DeleteSelectedCategory([FromQuery] int id)
+        public async Task<ActionResult> DeleteSelectedCategory([FromQuery] int id)
         {
             try
             {
-                _model.DeleteCategory(id);
+                await _model.DeleteCategory(id);
                 return Ok("Category deleted successfully");
             }
-            catch (InvalidDataException ex)
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -262,14 +339,30 @@ namespace vizsgaController.Controllers
             }
         }
         [HttpPost("create_report")]
-        public ActionResult CreateRep([FromBody] ReportDTO source)
+        public async Task<ActionResult> CreateRep([FromBody] ReportDTO source)
         {
             try
             {
-                _model.CreateReport(source);
+                await _model.CreateReport(source);
                 return Ok("Report submitted successfully");
             }
-            catch (InvalidDataException ex)
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
