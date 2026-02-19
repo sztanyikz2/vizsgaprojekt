@@ -154,10 +154,12 @@ namespace vizsgaController.Model
             if (user == null) throw new KeyNotFoundException("User not found");
             var post = _context.Posts.Where(x => x.PostID == favpost.postId).First();
             if (post == null) throw new KeyNotFoundException("Post not found");
+            if (user.Favourites.Contains(post) && favpost.addTo) throw new InvalidOperationException("Post already in Favourites");
+            if (!user.Favourites.Contains(post) && !favpost.addTo) throw new InvalidOperationException("Post is not in Favourites");
+            if (favpost.addTo != true || favpost.addTo !=false) throw new ArgumentException("addTo must be true or false");
 
             using var trx = _context.Database.BeginTransaction();
             {
-
                 if (favpost.addTo)
                 {
                     user.Favourites.Add(post);
@@ -168,7 +170,6 @@ namespace vizsgaController.Model
                 }
                 _context.SaveChanges();
                 trx.Commit();
-
             }
 
         }
