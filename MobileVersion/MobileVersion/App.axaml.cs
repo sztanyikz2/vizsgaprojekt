@@ -16,6 +16,7 @@ public partial class App : Application
     private consoleClientModel model;
     public override void Initialize()
     {
+        model = new consoleClientModel("https://localhost:7277/");
         AvaloniaXamlLoader.Load(this);
     }
 
