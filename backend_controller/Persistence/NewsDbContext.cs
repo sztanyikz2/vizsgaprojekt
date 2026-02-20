@@ -19,11 +19,11 @@ namespace vizsgaController.Persistence
             base.OnModelCreating(modelBuilder);
 
             // Configure Post -> User relationship (author)
-            modelBuilder.Entity<Post>()
-                .HasOne(p => p.User)
-                .WithMany()
-                .HasForeignKey(p => p.UserID)
-                .OnDelete(DeleteBehavior.Restrict);
+             modelBuilder.Entity<Post>()
+        .HasOne(p => p.User)
+        .WithMany(u => u.Posts)
+        .HasForeignKey(p => p.UserID)
+        .OnDelete(DeleteBehavior.Cascade);
 
             // Configure User -> Posts relationships (many-to-many)
             modelBuilder.Entity<User>()
@@ -76,6 +76,7 @@ namespace vizsgaController.Persistence
         public ICollection<Post> Favourites { get; set; }
         public ICollection<Post> Upvoted_Posts { get; set; }
         public ICollection<Post> Downvoted_Posts { get; set; }
+        public ICollection<Post> Posts { get; set; }
     }
     public class Post
     {

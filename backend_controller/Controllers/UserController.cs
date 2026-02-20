@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using vizsgaController.Dtos;
 using vizsgaController.Model;
+using vizsgaController.Persistence;
 
 namespace vizsgaController.Controllers
 {
@@ -13,17 +14,17 @@ namespace vizsgaController.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserModel await _model;
+        private readonly IUserModel _model;
         public UserController(IUserModel model)
         {
-            await _model = model;
+            _model = model;
         }
         [HttpPost("registration")]
         public ActionResult Registration(string username, string password)
         {
             try
             {
-                await _model.Registration(username, password);
+                _model.Registration(username, password);
                 return Ok();
             }
             catch (InvalidOperationException ex)
@@ -37,11 +38,11 @@ namespace vizsgaController.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> LogIn(string username, string password)
+        public async Task<ActionResult<User>> LogIn(string username, string password)
         {
             try
             {
-                var user = await _model.ValidateUser(username, password);
+                var user = _model.ValidateUser(username, password);
                 if (user == null)
                 {
                     return Unauthorized("Invalid username or password");
@@ -71,7 +72,7 @@ namespace vizsgaController.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("rolemodify")]
-        public ActionResult RoleModify(int userid)
+        public async Task<ActionResult> RoleModify(int userid)
         {
             try
             {
@@ -86,7 +87,7 @@ namespace vizsgaController.Controllers
         }
         [Authorize]
         [HttpPut("modifypassword")]
-        public ActionResult ModifyPassword(string username, string password)
+        public async Task<ActionResult> ModifyPassword(string username, string password)
         {
             try
             {

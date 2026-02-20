@@ -13,7 +13,7 @@ namespace vizsgaController.Model
         {
             _context = context;
         }
-        public void Registration(string name, string password)
+        public async Task Registration(string name, string password)
         {
             if (_context.Users.Any(u => u.Username == name))
             {
@@ -40,7 +40,7 @@ namespace vizsgaController.Model
             return Convert.ToBase64String(hash);
 
         }
-        public void RoleModify(int userid)
+        public async Task RoleModify(int userid)
         {
             using var trx= _context.Database.BeginTransaction();
             {
@@ -54,7 +54,7 @@ namespace vizsgaController.Model
                 trx.Commit();
             }
         }
-        public void ModifyPassword(string username, string password)
+        public async Task ModifyPassword(string username, string password)
         {
             using var trx=_context.Database.BeginTransaction();
             {

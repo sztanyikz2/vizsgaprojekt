@@ -15,7 +15,7 @@ namespace vizsgaController.Model
         }
         public IEnumerable<UserDTO> GetUserNamesBySearch(string name)
         {
-            if (name == null) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
             if (!_context.Users.Any(x => x.Username.ToLower().Contains(name.ToLower()))) throw new InvalidDataException("Nincs ilyen nevű user");
 
             return _context.Users.Where(x => x.Username.ToLower() == name.ToLower()).Select(x => new UserDTO
@@ -29,7 +29,7 @@ namespace vizsgaController.Model
         }
         public IEnumerable<PostDTO> GetPostsBySearch(string title)
         {
-            if (title == null) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
+            if (string.IsNullOrWhiteSpace(title)) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
             if (!_context.Posts.Any(x => x.Title.ToLower().Contains(title.ToLower()))) throw new InvalidDataException("Nincs ilyen post");
 
             return _context.Posts.Where(x => x.Title.ToLower().Contains(title.ToLower())).Select(x => new PostDTO
@@ -92,7 +92,7 @@ namespace vizsgaController.Model
             if (string.IsNullOrWhiteSpace(source.title)) throw new ArgumentException("Title can't be empty");
             if (string.IsNullOrWhiteSpace(source.content)) throw new ArgumentException("Content can't be empty");
 
-            int before = _context.Users.Count();
+            int before = _context.Posts.Count();
 
             using var trx = _context.Database.BeginTransaction();
             _context.Posts.Add(new Post
@@ -101,19 +101,22 @@ namespace vizsgaController.Model
                 CategoryID = source.categoryID,
                 Title = source.title,
                 Content = source.content,
-                Created_at = DateTime.UtcNow
+                Created_at = DateTime.Now
             });
-
-            int after = _context.Users.Count();
-            if (after - before != 1) throw new InvalidOperationException("User wasn't created");
 
             _context.SaveChanges();
             trx.Commit();
+
+            int after = _context.Posts.Count();
+            if (after - before != 1) throw new InvalidOperationException("Post wasn't created");
+
+            
 
             await Task.CompletedTask;
         }
         public async Task DeletePost(int id)
         {
+            if(id <= 0) throw new ArgumentOutOfRangeException(nameof(id), "Az id csak pozitív egész lehet.");
             var post = await _context.Posts.FirstOrDefaultAsync(x => x.PostID == id);
             if (post == null) throw new KeyNotFoundException("Post not found");
 

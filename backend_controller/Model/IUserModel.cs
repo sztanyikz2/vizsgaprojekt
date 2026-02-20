@@ -4,9 +4,9 @@ namespace vizsgaController.Model
 {
     public interface IUserModel
     {
-        public void Registration(string name, string password);
+        public Task Registration(string name, string password);
         public User ValidateUser(string username, string password);
-        public void RoleModify(int userid);
-        public void ModifyPassword(string username, string password);
+        public Task RoleModify(int userid);
+        public Task ModifyPassword(string username, string password);
     }
 }
