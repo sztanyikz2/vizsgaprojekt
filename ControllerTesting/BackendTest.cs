@@ -39,7 +39,7 @@ namespace ControllerTesting
             Assert.Contains("Nincs ilyen", ex.Message);
         }
         ///////////////////////////////////////
-        
+
         [Fact]
         public void PostSearch_Valid()
         {
@@ -63,7 +63,7 @@ namespace ControllerTesting
             Assert.Contains("Nincs ilyen", ex.Message);
         }
         ///////////////////////////////////////
-        
+
         [Fact]
         public async Task DeleteUser_Valid()
         {
@@ -93,7 +93,7 @@ namespace ControllerTesting
             await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.DeleteUsers(999999));
         }
         //////////////////////////////////////////
-        
+
         [Fact]
         public async Task ModifyUser_Valid()
         {
@@ -115,7 +115,7 @@ namespace ControllerTesting
         }
 
         [Fact]
-        public async Task ModifyRoom_NullDTO()
+        public async Task ModifyUser_NullDTO()
         {
             await Assert.ThrowsAsync<ArgumentNullException>(() => _model.ModifyUsers(null!));
         }
@@ -123,17 +123,17 @@ namespace ControllerTesting
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public async Task ModifyRoom_IDOutOfRange(int id)
+        public async Task ModifyUser_IDOutOfRange(int id)
         {
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.DeleteUsers(id));
         }
         [Fact]
-        public async Task ModifyRoom_IDNotFound()
+        public async Task ModifyUser_IDNotFound()
         {
             await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.DeleteUsers(999999));
         }
         [Fact]
-        public async Task ModifyRoom_EmptyName()
+        public async Task ModifyUser_EmptyName()
         {
             var id = _context.Users.Select(r => r.UserID).First();
 
@@ -147,7 +147,7 @@ namespace ControllerTesting
         }
 
         [Fact]
-        public async Task ModifyRoom_UsernameExists()
+        public async Task ModifyUser_UsernameExists()
         {
             var id = _context.Users.Select(r => r.UserID).First();
 
@@ -164,6 +164,118 @@ namespace ControllerTesting
             Assert.False(_context.Users.Any(r => r.UserID == id));
         }
         ///////////////////////////////////////////
+
+
+        [Fact]
+        public async Task CreatePost_Valid()
+        {
+            var dto = new PostDTO
+            {
+                categoryID = 1,
+                content = "This is a test post.",
+                created_at = DateTime.Now,
+                title = "Test Post",
+                userID = 1
+            };
+
+            var before = _context.Posts.Count();
+            await _model.CreatePost(dto);
+            var after = _context.Posts.Count();
+            Assert.Equal(before + 1, after);
+        }
+
+        [Fact]
+        public async Task CreatePost_NullDTO()
+        {
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _model.CreatePost(null!));
+        }
+
+        [Fact]
+        public async Task CreatePost_InvalidId()
+        {
+            var dto = new PostDTO
+            {
+                categoryID = -1,
+                content = "This is a test post.",
+                created_at = DateTime.Now,
+                title = "test",
+                userID = -1
+            };
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.CreatePost(dto));
+        }
+
+        [Fact]
+        public async Task CreatePost_UserNotFound()
+        {
+            var dto = new PostDTO
+            {
+                categoryID = 1,
+                content = "This is a test post.",
+                created_at = DateTime.Now,
+                title = "test",
+                userID = 999999999
+            };
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.CreatePost(dto));
+        }
+
+        [Fact]
+        public async Task CreatePost_CategoryNotFound()
+        {
+            var dto = new PostDTO
+            {
+                categoryID = 999999999,
+                content = "This is a test post.",
+                created_at = DateTime.Now,
+                title = "test",
+                userID = 1
+            };
+            await Assert.ThrowsAsync<KeyNotFoundException>(() => _model.CreatePost(dto));
+        }
+
+        [Fact]
+        public async Task CreatePost_EmptyTitle()
+        {
+            var dto = new PostDTO
+            {
+                categoryID = 1,
+                content = "This is a test post.",
+                created_at = DateTime.Now,
+                title = "   ",
+                userID = 1
+            };
+            await Assert.ThrowsAsync<ArgumentException>(() => _model.CreatePost(dto));
+        }
+
+        [Fact]
+        public async Task CreatePost_EmptyContent()
+        {
+            var dto = new PostDTO
+            {
+                categoryID = 1,
+                content = "   ",
+                created_at = DateTime.Now,
+                title = "test",
+                userID = 1
+            };
+            await Assert.ThrowsAsync<ArgumentException>(() => _model.CreatePost(dto));
+        }
+        ///////////////////////////////////////////
+        [Fact]
+        public async Task DeletePost_Valid()
+        {
+            var id = _context.Posts.Select(r => r.PostID).First();
+            var before = _context.Posts.Count();
+            await _model.DeletePost(id);
+            var after = _context.Posts.Count();
+            Assert.Equal(before - 1, after);
+            Assert.False(_context.Posts.Any(r => r.PostID == id));
+        }
+
+        [Fact]
+        public async Task DeletePost_InvalidId()
+        {
+                        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.DeletePost(-1));
+        }
 
     }
 }

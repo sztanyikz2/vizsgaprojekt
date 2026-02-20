@@ -92,7 +92,7 @@ namespace vizsgaController.Model
             if (string.IsNullOrWhiteSpace(source.title)) throw new ArgumentException("Title can't be empty");
             if (string.IsNullOrWhiteSpace(source.content)) throw new ArgumentException("Content can't be empty");
 
-            int before = _context.Users.Count();
+            int before = _context.Posts.Count();
 
             using var trx = _context.Database.BeginTransaction();
             _context.Posts.Add(new Post
@@ -101,19 +101,22 @@ namespace vizsgaController.Model
                 CategoryID = source.categoryID,
                 Title = source.title,
                 Content = source.content,
-                Created_at = DateTime.UtcNow
+                Created_at = DateTime.Now
             });
-
-            int after = _context.Users.Count();
-            if (after - before != 1) throw new InvalidOperationException("User wasn't created");
 
             _context.SaveChanges();
             trx.Commit();
+
+            int after = _context.Posts.Count();
+            if (after - before != 1) throw new InvalidOperationException("Post wasn't created");
+
+            
 
             await Task.CompletedTask;
         }
         public async Task DeletePost(int id)
         {
+            if(id <= 0) throw new ArgumentOutOfRangeException(nameof(id), "Az id csak pozitív egész lehet.");
             var post = await _context.Posts.FirstOrDefaultAsync(x => x.PostID == id);
             if (post == null) throw new KeyNotFoundException("Post not found");
 
