@@ -282,15 +282,40 @@ namespace ControllerTesting
         [Fact]
         public async Task DeleteOwnPost_Valid()
         {
-            var dto = new PostDTO
+            int before = _context.Posts.Count();
+            var dto = new DeleteOwnPostDTO
             {
-                categoryID = 1,
-                content = "testtesttest",
-                created_at = DateTime.Now,
-                title = "test",
-                userID = 999999
+                postid = 1,
+                userId = 1
             };
-            await Assert.ThrowsAnyAsync<KeyNotFoundException> (() => _model.CreatePost(dto));
+            _model.DeleteOwnPost(dto);
+            int after = _context.Posts.Count();
+            Assert.Equal(before - 1, after);
+        }
+
+
+        [Fact]
+        public async Task DeleteOwnPost_PostNotFound()
+        {
+            var dto = new DeleteOwnPostDTO
+            {
+                postid = 99999999,
+                userId = 1
+            };
+            await Assert.ThrowsAnyAsync<KeyNotFoundException>(() => _model.DeleteOwnPost(dto));
+        }
+
+
+        [Fact]
+        public async Task DeletePost_UserNotFound()
+        {
+            var dto = new DeleteOwnPostDTO
+            {
+                postid = 1,
+                userId = 999999999
+            };
+
+            await Assert.ThrowsAnyAsync<KeyNotFoundException>(() => _model.DeleteOwnPost(dto));
         }
     }
 }
