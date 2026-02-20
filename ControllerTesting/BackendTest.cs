@@ -35,8 +35,8 @@ namespace ControllerTesting
         [Fact]
         public void NameSearch_NoMatch()
         {
-            var ex = Assert.Throws<KeyNotFoundException>(() => _model.GetUserNamesBySearch("NINCSILYEN").ToList());
-            Assert.Contains("nincs ilyen", ex.Message);
+            var ex = Assert.Throws<InvalidDataException>(() => _model.GetUserNamesBySearch("NINCSILYEN").ToList());
+            Assert.Contains("Nincs ilyen", ex.Message);
         }
         ///////////////////////////////////////
         
@@ -45,7 +45,7 @@ namespace ControllerTesting
         {
             var result = _model.GetPostsBySearch("future").ToList();
             Assert.NotEmpty(result);
-            Assert.All(result, x => Assert.Contains("future", x.title));
+            Assert.All(result, x => Assert.Contains("Future", x.title));
         }
         [Theory]
         [InlineData(null)]
@@ -59,8 +59,8 @@ namespace ControllerTesting
         [Fact]
         public void PostSearch_NoMatch()
         {
-            var ex = Assert.Throws<KeyNotFoundException>(() => _model.GetPostsBySearch("NINCSILYEN").ToList());
-            Assert.Contains("nincs ilyen", ex.Message);
+            var ex = Assert.Throws<InvalidDataException>(() => _model.GetPostsBySearch("NINCSILYEN").ToList());
+            Assert.Contains("Nincs ilyen", ex.Message);
         }
         ///////////////////////////////////////
         

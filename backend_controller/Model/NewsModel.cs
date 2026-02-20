@@ -15,7 +15,7 @@ namespace vizsgaController.Model
         }
         public IEnumerable<UserDTO> GetUserNamesBySearch(string name)
         {
-            if (name == null) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
             if (!_context.Users.Any(x => x.Username.ToLower().Contains(name.ToLower()))) throw new InvalidDataException("Nincs ilyen nevű user");
 
             return _context.Users.Where(x => x.Username.ToLower() == name.ToLower()).Select(x => new UserDTO
@@ -29,7 +29,7 @@ namespace vizsgaController.Model
         }
         public IEnumerable<PostDTO> GetPostsBySearch(string title)
         {
-            if (title == null) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
+            if (string.IsNullOrWhiteSpace(title)) throw new ArgumentException("Töltsd ki a keresőmezőt, pretty please");
             if (!_context.Posts.Any(x => x.Title.ToLower().Contains(title.ToLower()))) throw new InvalidDataException("Nincs ilyen post");
 
             return _context.Posts.Where(x => x.Title.ToLower().Contains(title.ToLower())).Select(x => new PostDTO
