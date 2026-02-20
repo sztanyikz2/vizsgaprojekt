@@ -274,8 +274,23 @@ namespace ControllerTesting
         [Fact]
         public async Task DeletePost_InvalidId()
         {
-                        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.DeletePost(-1));
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => _model.DeletePost(-1));
         }
 
+        ///////////////////////////////////////////
+
+        [Fact]
+        public async Task DeleteOwnPost_Valid()
+        {
+            var dto = new PostDTO
+            {
+                categoryID = 1,
+                content = "testtesttest",
+                created_at = DateTime.Now,
+                title = "test",
+                userID = 999999
+            };
+            await Assert.ThrowsAnyAsync<KeyNotFoundException> (() => _model.CreatePost(dto));
+        }
     }
 }
