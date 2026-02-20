@@ -13,8 +13,57 @@ namespace vizsgaController.Persistence
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Image> Images { get; set; }
         public NewsDbContext(DbContextOptions<NewsDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configure Post -> User relationship (author)
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure User -> Posts relationships (many-to-many)
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Favourites)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserFavourites"));
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Upvoted_Posts)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserUpvotes"));
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Downvoted_Posts)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("UserDownvotes"));
+
+            // Configure Post -> Category relationship
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.CategoryID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure Comment -> Post relationship
+            modelBuilder.Entity<Comment>()
+                .HasOne<Post>()
+                .WithMany(p => p.Comments)
+                .HasForeignKey(c => c.PostID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure Image -> Post relationship
+            modelBuilder.Entity<Image>()
+                .HasOne(i => i.Post)
+                .WithMany()
+                .HasForeignKey(i => i.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
-    [Index(nameof(Username), nameof(Useremail), IsUnique =true)]
+    [Index(nameof(Username), nameof(Useremail), IsUnique = true)]
     public class User
     {
         [Key]
@@ -45,7 +94,7 @@ namespace vizsgaController.Persistence
         public Category Category { get; set; }
         public User User { get; set; }
     }
-    [Index(nameof(Categoryname), IsUnique =true)]
+    [Index(nameof(Categoryname), IsUnique = true)]
     public class Category
     {
         [Key]
@@ -89,6 +138,6 @@ namespace vizsgaController.Persistence
 
         // opcionális: milyen entitáshoz tartozik a kép
         public int PostId { get; set; }
-        public Post Post  { get; set; }
+        public Post Post { get; set; }
     }
 }
